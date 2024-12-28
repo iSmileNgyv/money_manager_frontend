@@ -7,13 +7,10 @@ import {
   HttpRequest,
   HttpStatusCode
 } from "@angular/common/http";
-import { catchError, switchMap, throwError, Observable, of } from "rxjs";
+import { catchError, throwError, Observable } from "rxjs";
 import { AlertifyService, MessageType, Position } from './alertify.service';
-import { Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ErrorService } from "./error.service";
-import { UserService } from './models/user.service';
-import { LoginResponse } from '../contracts/user/login-response';
 
 @Injectable({
   providedIn: 'root'
@@ -22,10 +19,8 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
   constructor(
     private readonly alertifyService: AlertifyService,
-    private readonly router: Router,
     private readonly spinner: NgxSpinnerService,
-    private readonly errorService: ErrorService,
-    private readonly userService: UserService
+    private readonly errorService: ErrorService
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -38,39 +33,6 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === HttpStatusCode.Unauthorized) {
-          const refreshToken: string|null = localStorage.getItem("refreshToken");
-          if (refreshToken) {
-            return this.userService.refreshTokenLogin(refreshToken).pipe(
-              switchMap((response: LoginResponse | undefined) => {
-                console.log("setir 46");
-                console.log(response);
-                if (response?.isSuccess) {
-                  console.log(response);
-                  localStorage.setItem("accessToken", response.token.accessToken);
-                  localStorage.setItem("refreshToken", response.token.refreshToken);
-
-                  const newAuthReq: HttpRequest<any> = req.clone({
-                    setHeaders: { Authorization: `Bearer ${response.token.accessToken}` }
-                  });
-                  return next.handle(newAuthReq);
-                } else {
-                  this.router.navigate(['/auth/login']).then();
-                  return throwError(() => new Error("Unauthorized"));
-                }
-              }),
-              catchError(() => {
-                this.router.navigate(['/auth/login']).then();
-                return throwError(() => new Error("Unauthorized"));
-              })
-            );
-
-          } else {
-            this.router.navigate(['/auth/login']).then();
-            return throwError(() => new Error("Unauthorized"));
-          }
-        }
-
         this.handleErrorMessages(error);
         return throwError(() => error);
       })

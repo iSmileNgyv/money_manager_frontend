@@ -1,9 +1,9 @@
 import {AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {HttpClientService} from '../app/services/http-client.service';
+import {HttpClientService} from '../services/http-client.service';
 import {HttpErrorResponse} from "@angular/common/http";
 import {NgxSpinnerService} from "ngx-spinner";
-import {ErrorService} from "../app/services/error.service";
+import {ErrorService} from "../services/error.service";
 declare var $: any;
 @Directive({
   selector: '[appModal]',
@@ -124,22 +124,44 @@ export class ModalDirective implements OnInit, AfterViewInit{
           input.setAttribute('id', item.name);
           if(item.style)
             input.setAttribute('style', item.style);
-          if(item.element_type === 'select' && item.options) {
-            for(const option of item.options) {
-              let optionElement: HTMLElement = this.renderer.createElement('option');
-              optionElement.setAttribute('value', option.value);
-              if(item.value === option.value) {
-                optionElement.setAttribute('selected', 'selected');
+          if (item.element_type === 'select' && item.options) {
+            if (item.options instanceof Promise) {
+              item.options.then((options: { value: string; text: string }[]) => {
+                for (const option of options) {
+                  let optionElement: HTMLElement = this.renderer.createElement('option');
+                  optionElement.setAttribute('value', option.value);
+
+                  if (item.value === option.value) {
+                    optionElement.setAttribute('selected', 'selected');
+                  }
+
+                  optionElement.innerHTML = option.text;
+                  this.renderer.appendChild(input, optionElement);
+                }
+                input.removeAttribute('type');
+              });
+            } else {
+              for (const option of item.options) {
+                let optionElement: HTMLElement = this.renderer.createElement('option');
+                optionElement.setAttribute('value', option.value);
+
+                if (item.value === option.value) {
+                  optionElement.setAttribute('selected', 'selected');
+                }
+
+                optionElement.innerHTML = option.text;
+                this.renderer.appendChild(input, optionElement);
               }
-              optionElement.innerHTML = option.text;
-              this.renderer.appendChild(input, optionElement);
+              input.removeAttribute('type');
             }
-            input.removeAttribute('type');
           }
           if(item.apiEndpoint) {
+            if(item.parameterField != null) {
+              item.apiActions = item.apiActions + "?" + item.parameterField + "=" + $("#" + item.parameterField).val();
+            }
             this.httpClientService.get({
-              controller: "apiEndpoints",
-              action: item.apiActions
+              controller: item.apiEndpointController,
+              queryString: item.apiActions
             }).subscribe((result: any) => {
               let optionElement: HTMLElement = this.renderer.createElement('option');
               optionElement.setAttribute('value', '');
@@ -288,8 +310,10 @@ export class ModalDirective implements OnInit, AfterViewInit{
     value?: string,
     name: string,
     label?: string;
-    options?: {value: string, text: string}[],
+    parameterField?: string,
+    options?: {value: string, text: string}[] | Promise<{value: string, text: string}[]>,
     apiEndpoint?: boolean,
+    apiEndpointController?: string,
     apiActions?: string
   }[] = [];
   @Input('modal_id') modal_id?: string;

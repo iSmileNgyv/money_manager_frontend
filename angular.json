@@ -32,9 +32,15 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/alertifyjs/build/css/alertify.min.css",
+              "node_modules/alertifyjs/build/css/themes/default.min.css",
+              "node_modules/ngx-spinner/animations/ball-clip-rotate.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/alertifyjs/build/alertify.min.js"
+            ],
             "server": "src/main.server.ts",
             "outputMode": "server",
             "ssr": {
@@ -103,5 +109,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "6f1e5e45-736c-4139-8101-158c8b20dd7e"
   }
 }

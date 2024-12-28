@@ -1,0 +1,27 @@
+<div class="form-group" *ngIf="icon">
+  <label *ngIf="label" [for]="id" class="form-label">{{ label }}</label>
+  <div class="input-group">
+    <div *ngIf="iconPosition === 'left'" class="input-group-prepend">
+      <span class="input-group-text">
+        <i [class]="icon"></i>
+      </span>
+    </div>
+
+    <select [class]="class" [value]="value" [id]="id" [disabled]="disabled" [name]="name" (change)="handleValueChange($event)">
+      <option *ngFor="let option of options" [value]="option.value">{{ option.text }}</option>
+    </select>
+
+    <div *ngIf="iconPosition === 'right'" class="input-group-append">
+      <span class="input-group-text">
+        <i [class]="icon"></i>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="form-group" *ngIf="!icon">
+  <label *ngIf="label" [for]="id" class="form-label">{{ label }}</label>
+  <select [class]="class" [id]="id" [disabled]="disabled" [name]="name" (change)="handleValueChange($event)">
+    <option *ngFor="let option of options" [value]="option.value" [selected]="value == option.value ? 'selected' : ''">{{ option.text }}</option>
+  </select>
+</div>

@@ -1,6 +1,6 @@
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
-import {HttpClientService} from "../app/services/http-client.service";
-import {AlertifyService, MessageType, Position} from "../app/services/alertify.service";
+import {HttpClientService} from "../services/http-client.service";
+import {AlertifyService, MessageType, Position} from "../services/alertify.service";
 import {HttpErrorResponse} from "@angular/common/http";
 
 @Directive({

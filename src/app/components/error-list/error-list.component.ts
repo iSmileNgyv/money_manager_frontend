@@ -9,16 +9,14 @@ import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
   imports: [
     NgIf,
     NgForOf,
-    CdkDrag,
-    CdkDragHandle
+    CdkDrag
   ],
   templateUrl: './error-list.component.html',
   styleUrl: './error-list.component.scss'
 })
 export class ErrorListComponent implements OnInit, AfterViewInit{
   constructor(
-    private readonly errorService: ErrorService,
-    private renderer: Renderer2
+    private readonly errorService: ErrorService
   ) {
   }
   @Input() errors: { message: string, isResolved: boolean }[] = [];
@@ -26,19 +24,11 @@ export class ErrorListComponent implements OnInit, AfterViewInit{
   visible: boolean = false;
   position: {x: number, y: number} = { x: 0, y: 0 };
 
-  toggleCollapse() {
-    this.collapsed = !this.collapsed;
-  }
-
   close() {
     this.errorService.clearErrors();
     this.visible = false;
     sessionStorage.removeItem('errorListPosition');
     this.position = {x: 0, y: 0};
-  }
-
-  clearErrors() {
-    this.errors = [];
   }
 
   toggleResolved(index: number) {

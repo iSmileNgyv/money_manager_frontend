@@ -1,6 +1,6 @@
 import {Directive, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2} from '@angular/core';
 import {NgxSpinnerService} from "ngx-spinner";
-import {HttpClientService} from "../app/services/http-client.service";
+import {HttpClientService} from "../services/http-client.service";
 import {HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 declare var $: any;
 @Directive({
@@ -8,7 +8,6 @@ declare var $: any;
   standalone: true
 })
 export class FilterDirective implements OnInit{
-
   constructor(
     private readonly renderer: Renderer2,
     private readonly elementRef: ElementRef,
@@ -130,7 +129,7 @@ export class FilterDirective implements OnInit{
     value?: string,
     label?: string,
     name: string;
-    options?: {value: string, text: string}[];
+    options?: {value: any, text: string}[];
     firstNull?: boolean
   }[] = [];
   @Input('model') model: any;
