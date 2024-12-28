@@ -1,0 +1,39 @@
+.error-list {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  min-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1200;
+}
+
+.card {
+  cursor: move;
+}
+
+.error-list li {
+  cursor: pointer;
+  &:hover .delete-icon {
+    display: inline;
+  }
+}
+
+.delete-icon {
+  display: none;
+  color: #65646d;
+  cursor: pointer;
+
+  &:hover {
+    color: gray;
+  }
+}
+
+.resolved {
+  text-decoration: line-through;
+  color: gray;
+}

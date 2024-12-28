@@ -1,0 +1,24 @@
+<div #errorList *ngIf="visible" class="error-list card" cdkDrag cdkDragBoundary=".error-boundary" [cdkDragFreeDragPosition]="position" (cdkDragEnded)="onDragEnded($event)">
+  <div class="card-header">
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove" (click)="close()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <span class="card-title">Xətalar siyahısı</span>
+
+  </div>
+  <div class="card-body">
+    <ul style="list-style: none">
+      <li
+        *ngFor="let error of errors; let i = index"
+        (click)="toggleResolved(i)"
+        [class.resolved]="error.isResolved">
+        {{ error.message }} <i class="fas fa-trash-alt delete-icon fa-sm ml-3" (click)="removeError(i)"></i>
+      </li>
+    </ul>
+  </div>
+</div>

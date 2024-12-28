@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="{{formClass}}" enctype="multipart/form-data">
+  <div class="modal fade" data-backdrop="static" data-keyboard="false" id="{{modal_id}}" appModal
+       [modal_id]="modal_id"
+       [title]="title"
+       [size]="size"
+       [data]="data"
+       [show_save_button]="show_save_button"
+       [model]="model"
+       [controller]="controller"
+       [ignore]="ignore"
+       [method]="method"
+       [formClass]="formClass"
+       (successCallBack)="handleSuccess()"
+       [button_title]="buttonTitle"
+  >
+    <ngx-spinner type="square-jelly-box" [fullScreen]="false" size="small"></ngx-spinner>
+</div>
+</form>
