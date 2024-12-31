@@ -7,12 +7,13 @@ import {
   ElementRef,
   Type,
   ComponentRef,
-  Renderer2, ViewRef
+  Renderer2
 } from '@angular/core';
 import { InputComponent } from '../elements/input/input.component';
 import { SelectComponent } from '../elements/select/select.component';
 import { NgIf } from '@angular/common';
 import {TextareaComponent} from '../elements/textarea/textarea.component';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 
 type CommonParams = {
   required?: boolean;
@@ -47,10 +48,12 @@ type TextareaParams = BaseParams & {
   placeholder?: string;
   readonly?: boolean;
 }
+
 type StepBase<TParams> = {
   step: number;
   params: TParams;
   col_size?: number;
+  domElement?: HTMLElement;
 } & (
   | { wait: true; waitParams: { dependsOn: string; [key: string]: any, options?: {value: string; text: string}[], value?: string, run?: (value: string) => void  } }
   | { wait: false; waitParams?: never }
@@ -78,7 +81,7 @@ type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
   styleUrls: ['./dynamic-modal.component.scss'],
-  imports: [NgIf]
+  imports: [NgIf, ReactiveFormsModule]
 })
 export class DynamicModalComponent implements AfterViewInit {
   private defaults: { element_type: string; size: string; col_size: number } = {
@@ -90,33 +93,49 @@ export class DynamicModalComponent implements AfterViewInit {
   @Input('modalId') modalId!: string;
   @Input('title') title!: string;
   @Input('size') size: string = this.defaults.size;
-  @ViewChild('dynamicContainer', { read: ViewContainerRef })
-  dynamicContainer!: ViewContainerRef;
+  @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
   @ViewChild('modalElement') modalElement!: ElementRef;
-
-  constructor(private renderer: Renderer2) {}
+  form: FormGroup;
+  constructor(
+    private renderer: Renderer2,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({});
+  }
 
   public async ngAfterViewInit(): Promise<void> {
+    this.createForm();
     await this.renderSteps();
   }
 
+  private createForm(): void {
+    this.steps.forEach(step => {
+      this.form.addControl(step.params.name, this.fb.control(step.params.value || ''));
+    });
+  }
+
   private async renderSteps(): Promise<void> {
+    this.steps.sort((a: Step, b: Step): number => a.step - b.step);
+
     for (const step of this.steps) {
-      if(!step.wait)
-        await this.renderComponent(step);
-      else {
-        const dependsOn: string = step.waitParams?.dependsOn;
-        if(dependsOn) {
-          const dependency: Step|undefined = this.steps.find(s => s.params.name === dependsOn);
-          if(dependency && dependency.params.value) {
-            await this.renderComponent(step);
-            (step as Step).wait = false;
-            if(step.waitParams.run) {
-              step.waitParams.run(dependency.params.value);
-            }
+      if (step.wait && step.waitParams?.dependsOn) {
+        const dependentStep: Step|undefined = this.steps.find(s => s.params.name === step.waitParams?.dependsOn);
+        if (dependentStep && dependentStep.params.value) {
+          (step as Step).wait = false;
+          if (step.waitParams.run) {
+            step.waitParams.run(dependentStep.params.value);
           }
         }
       }
+
+      if (!step.domElement) {
+        await this.renderComponent(step);
+      }
+      this.renderer.setStyle(
+        step.domElement,
+        'display',
+        step.wait ? 'none' : 'block'
+      );
     }
   }
 
@@ -130,6 +149,7 @@ export class DynamicModalComponent implements AfterViewInit {
   private async renderComponent(step: Step): Promise<void> {
     const elementType: string = step.element_type || this.defaults.element_type;
     let componentToRender: Type<any>;
+
     switch (elementType) {
       case 'input':
         componentToRender = InputComponent;
@@ -141,80 +161,67 @@ export class DynamicModalComponent implements AfterViewInit {
         componentToRender = TextareaComponent;
         break;
       default:
-        console.warn(`Component type ${elementType} is not supported.`);
+        console.warn(`Unsupported component type: ${elementType}`);
         return;
     }
+
     const colSize: number = step.col_size || this.defaults.col_size;
+
     const colElement: HTMLElement = this.renderer.createElement('div');
     this.renderer.addClass(colElement, `col-md-${colSize}`);
+
     const componentRef: ComponentRef<any> = this.dynamicContainer.createComponent(componentToRender);
-    const baseParams = step.params as BaseParams;
-    Object.assign(componentRef.instance, baseParams);
+    Object.assign(componentRef.instance, step.params);
+    this.renderer.setAttribute(componentRef.location.nativeElement, 'formControlName', step.params.name);
     if (componentRef.instance.valueChange && componentRef.instance.valueChange.subscribe) {
       componentRef.instance.valueChange.subscribe((value: string): void => {
+        step.params.value = value;
+        this.form.get(step.params.name)?.setValue(value);
         this.handleComponentValueChange(step, value);
       });
     }
-    switch(step.element_type){
-      case 'input':
-        const inputParams = step.params as InputParams;
-        Object.assign(componentRef.instance, inputParams);
-        break;
-      case 'select':
-        const selectParams = step.params as SelectParams;
-        Object.assign(componentRef.instance, selectParams);
-        break;
-      case 'textarea':
-        const textareaParams = step.params as TextareaParams;
-        Object.assign(componentRef.instance, textareaParams);
-        break;
-    }
-    /*if (step.element_type === 'input') {
-      const params = step.params as InputParams;
-      Object.assign(componentRef.instance, params);
-    } else if (step.element_type === 'select') {
-      const params = step.params as SelectParams;
-      Object.assign(componentRef.instance, params);
-    }*/
+
     this.renderer.appendChild(colElement, componentRef.location.nativeElement);
     this.renderer.appendChild(this.dynamicContainer.element.nativeElement, colElement);
+
+    step.domElement = colElement;
   }
 
-  private async removeComponent(step: Step): Promise<void> {
+  public onSubmit(): void {
+    console.log(this.form.value);
+  }
+
+  private hideDependentSteps(step: Step): void {
     const dependentSteps: Step[] = this.steps.filter(s => s.waitParams?.dependsOn === step.params.name);
-    dependentSteps.reverse().forEach(dependentStep => {
+    dependentSteps.forEach(dependentStep => {
+      dependentStep.params.value = "";
       dependentStep.wait = true;
-      const componentIndex: number = this.steps.indexOf(dependentStep);
-
-      if (componentIndex >= 0 && this.dynamicContainer.length > componentIndex) {
-        const componentRef: ViewRef | null = this.dynamicContainer.get(componentIndex);
-
-        if (componentRef) {
-          this.dynamicContainer.remove(componentIndex);
-          const colElements: NodeListOf<HTMLElement> = this.dynamicContainer.element.nativeElement.querySelectorAll(`.col-md-${dependentStep.col_size || this.defaults.col_size}`);
-          if (colElements && colElements[componentIndex]) {
-            const colElement: HTMLElement = colElements[componentIndex];
-            this.renderer.removeChild(this.dynamicContainer.element.nativeElement, colElement);
-          }
-        } else {
-          console.warn(`ComponentRef not found for step: ${dependentStep.params.name}`);
-        }
+      this.form.get(dependentStep.params.name)?.setValue('');
+      if (dependentStep.domElement) {
+        this.renderer.setStyle(dependentStep.domElement, 'display', 'none');
       }
+      this.hideDependentSteps(dependentStep);
     });
   }
+
   private async handleComponentValueChange(step: Step, value: string): Promise<void> {
-    if (value === "") {
-      await this.removeComponent(step);
+    if (!step.params.value || step.params.value === "") {
+      this.hideDependentSteps(step);
     } else {
       const dependentSteps: Step[] = this.steps.filter(s => s.waitParams?.dependsOn === step.params.name);
       for (const dependentStep of dependentSteps) {
-        if (dependentStep?.waitParams?.run) {
+        dependentStep.wait = false;
+        if (dependentStep.waitParams?.run) {
           dependentStep.waitParams.run(value);
         }
-        if (dependentStep.wait) {
+        if (!dependentStep.domElement) {
           await this.renderComponent(dependentStep);
-          (dependentStep as Step).wait = false;
         }
+        this.renderer.setStyle(dependentStep.domElement, 'display', 'block');
+        if (!dependentStep.params.value || dependentStep.params.value === "") {
+          this.hideDependentSteps(dependentStep);
+        }
+        await this.handleComponentValueChange(dependentStep, dependentStep.params.value || "");
       }
     }
   }

@@ -30,7 +30,7 @@ export class InputComponent {
   @Input('placeholder') placeholder: string = '';
   @Input('class') class: string = this.defaults.class;
   @Input('value') value: string = '';
-  @Input('name') name?: string = "";
+  @Input('name') name!: string;
   @Input('id') id?: string = this.name != null ? this.name : '';
   @Input('disabled') disabled: boolean = this.defaults.disabled;
   @Input('readonly') readonly: boolean = this.defaults.readonly;

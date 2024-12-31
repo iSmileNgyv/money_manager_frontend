@@ -101,7 +101,7 @@ export class CategoryComponent implements OnInit{
         waitParams: {
           dependsOn: 'categoryType',
           run: (value: string): void => {
-            setTimeout(() => {
+            setTimeout((): void => {
               const element = document.getElementById('subCategory') as HTMLSelectElement;
               if (element) {
                 element.innerHTML = '';
@@ -147,7 +147,7 @@ export class CategoryComponent implements OnInit{
         col_size: 6,
         wait: true,
         waitParams: {
-          dependsOn: 'categoryType',
+          dependsOn: 'subCategory',
           run: (value: string): void => {
             setTimeout((): void => {
               const element = document.getElementById('description') as HTMLInputElement;
@@ -164,6 +164,7 @@ export class CategoryComponent implements OnInit{
         params: {
           name: 'note',
           label: 'Not',
+          placeholder: 'Not girin',
           id: 'note'
         },
         col_size: 12,

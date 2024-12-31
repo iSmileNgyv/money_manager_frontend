@@ -7,7 +7,7 @@
       </span>
     </div>
 
-    <textarea [class]="class" [id]="id" [disabled]="disabled" [name]="name" (change)="handleValueChange($event)" [placeholder]="placeholder">{{value}}</textarea>
+    <textarea [class]="class" [id]="id" [disabled]="disabled" (change)="handleValueChange($event)" [placeholder]="placeholder">{{value}}</textarea>
 
     <div *ngIf="iconPosition === 'right'" class="input-group-append">
       <span class="input-group-text">
@@ -19,5 +19,5 @@
 
 <div class="form-group" *ngIf="!icon">
   <label *ngIf="label" [for]="id" class="form-label">{{ label }}</label>
-  <textarea [class]="class" [id]="id" [disabled]="disabled" [name]="name" (change)="handleValueChange($event)" [placeholder]="placeholder">{{value}}</textarea>
+  <textarea [class]="class" [id]="id" [disabled]="disabled" (change)="handleValueChange($event)" [placeholder]="placeholder">{{value}}</textarea>
 </div>

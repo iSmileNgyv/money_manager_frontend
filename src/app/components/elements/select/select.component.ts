@@ -19,7 +19,7 @@ export class SelectComponent {
   };
 
   @Input('class') class: string = this.defaults.class;
-  @Input('name') name?: string = '';
+  @Input('name') name!: string;
   @Input('id') id?: string = this.name;
   @Input('disabled') disabled: boolean = this.defaults.disabled;
   @Input('options') options: { value: string; text: string }[] = [];
