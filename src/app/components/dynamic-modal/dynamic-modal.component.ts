@@ -1,228 +1,140 @@
 import {
   Component,
   Input,
-  AfterViewInit,
   ViewChild,
   ViewContainerRef,
   ElementRef,
-  Type,
-  ComponentRef,
-  Renderer2
+  EventEmitter, OnInit, Output, OnChanges, SimpleChanges
 } from '@angular/core';
-import { InputComponent } from '../elements/input/input.component';
-import { SelectComponent } from '../elements/select/select.component';
 import { NgIf } from '@angular/common';
-import {TextareaComponent} from '../elements/textarea/textarea.component';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-
-type CommonParams = {
-  required?: boolean;
-  disabled?: boolean;
-  name: string;
-  id?: string;
-  iconPosition?: string;
-  class?: string;
-};
-
-type LabelOrIconParams = {
-  label?: string;
-  icon?: string;
-};
-
-type BaseParams = CommonParams & AtLeastOne<LabelOrIconParams, 'label' | 'icon'>;
-
-type InputParams = BaseParams & {
-  placeholder?: string;
-  type?: string;
-  value?: string;
-  readonly?: boolean;
-};
-
-type SelectParams = BaseParams & {
-  options: { value: string; text: string }[];
-  value?: string;
-};
-
-type TextareaParams = BaseParams & {
-  value?: string;
-  placeholder?: string;
-  readonly?: boolean;
-}
-
-type StepBase<TParams> = {
-  step: number;
-  params: TParams;
-  col_size?: number;
-  domElement?: HTMLElement;
-} & (
-  | { wait: true; waitParams: { dependsOn: string; [key: string]: any, options?: {value: string; text: string}[], value?: string, run?: (value: string) => void  } }
-  | { wait: false; waitParams?: never }
-  );
-
-export type StepInput = StepBase<InputParams> & {
-  element_type: 'input';
-};
-
-export type StepSelect = StepBase<SelectParams> & {
-  element_type: 'select';
-};
-
-export type StepTextarea = StepBase<TextareaParams> & {
-  element_type: 'textarea';
-};
-
-export type Step = StepInput | StepSelect | StepTextarea;
-
-
-type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
-  { [K in Keys]-?: Required<Pick<T, K>> }[Keys];
-
+import {ErrorService} from '../../services/error.service';
+import {HttpClientService} from '../../services/http-client.service';
+import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
+import {FormBuilderComponent, Step} from '../form-builder/form-builder.component';
 @Component({
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
   styleUrls: ['./dynamic-modal.component.scss'],
-  imports: [NgIf, ReactiveFormsModule]
+  imports: [NgIf, ReactiveFormsModule, CdkDrag, CdkDragHandle, FormBuilderComponent]
 })
-export class DynamicModalComponent implements AfterViewInit {
-  private defaults: { element_type: string; size: string; col_size: number } = {
+export class DynamicModalComponent implements OnInit, OnChanges {
+  defaults: { element_type: string; size: 'lg'; col_size: number, autoSubmit: boolean, type: 'POST' } = {
     element_type: 'input',
     size: 'lg',
-    col_size: 12
+    col_size: 12,
+    autoSubmit: true,
+    type: 'POST'
   };
-  @Input('steps') steps: Step[] = [];
-  @Input('modalId') modalId!: string;
-  @Input('title') title!: string;
-  @Input('size') size: string = this.defaults.size;
+  @Input('config') config!: DynamicModalConfig;
+  @Input('modalId') modalId?: string;
+  @Input('formData') formData?: any;
+  @Output() formReady: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+  @Output() close: EventEmitter<void> = new EventEmitter<void>();
   @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
   @ViewChild('modalElement') modalElement!: ElementRef;
+  @ViewChild(FormBuilderComponent) formBuilderComponent!: FormBuilderComponent;
   form: FormGroup;
+  isCollapsed: boolean = false;
   constructor(
-    private renderer: Renderer2,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private readonly errorService: ErrorService,
+    private readonly httpClientService: HttpClientService
   ) {
     this.form = this.fb.group({});
   }
-
-  public async ngAfterViewInit(): Promise<void> {
-    this.createForm();
-    await this.renderSteps();
-  }
-
-  private createForm(): void {
-    this.steps.forEach(step => {
-      this.form.addControl(step.params.name, this.fb.control(step.params.value || ''));
+  ngOnInit(): void {
+    this.formReady.emit(this.form);
+    this.config.steps.forEach(step => {
+      const key: string = step.params.name;
+      if (this.form.controls[key]) {
+        step.params.value = this.form.controls[key]?.value;
+      }
     });
   }
 
-  private async renderSteps(): Promise<void> {
-    this.steps.sort((a: Step, b: Step): number => a.step - b.step);
+  ngOnChanges(changes: SimpleChanges): void {
+    this.config = {
+      autoSubmit: this.config?.autoSubmit ?? this.defaults.autoSubmit,
+      type: this.config?.type ?? this.defaults.type,
+      size: this.config?.size ?? this.defaults.size,
+      modalId: this.config.modalId ?? this.modalId,
+      ...this.config
+    };
+  }
 
-    for (const step of this.steps) {
-      if (step.wait && step.waitParams?.dependsOn) {
-        const dependentStep: Step|undefined = this.steps.find(s => s.params.name === step.waitParams?.dependsOn);
-        if (dependentStep && dependentStep.params.value) {
-          (step as Step).wait = false;
-          if (step.waitParams.run) {
-            step.waitParams.run(dependentStep.params.value);
-          }
+  public toggleCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+  closeModal(): void {
+    this.close.emit();
+  }
+
+  private makeDto(): void {
+    Object.keys(this.config.dto).forEach(key => {
+      const step: Step | undefined = this.config.steps.find(s => s.params.name === key);
+      const formValue: any = this.form.value[key];
+      if (step) {
+        if (formValue === 'true' || formValue === 'false') {
+          this.config.dto[key] = formValue === 'true';
+        } else {
+          this.config.dto[key] = formValue || null;
         }
       }
-
-      if (!step.domElement) {
-        await this.renderComponent(step);
-      }
-      this.renderer.setStyle(
-        step.domElement,
-        'display',
-        step.wait ? 'none' : 'block'
-      );
-    }
-  }
-
-  public closeModal(): void {
-    const modalElement: HTMLElement|null = document.getElementById(this.modalId);
-    if (modalElement) {
-      (window as any).$(`#${this.modalId}`).modal('hide');
-    }
-  }
-
-  private async renderComponent(step: Step): Promise<void> {
-    const elementType: string = step.element_type || this.defaults.element_type;
-    let componentToRender: Type<any>;
-
-    switch (elementType) {
-      case 'input':
-        componentToRender = InputComponent;
-        break;
-      case 'select':
-        componentToRender = SelectComponent;
-        break;
-      case 'textarea':
-        componentToRender = TextareaComponent;
-        break;
-      default:
-        console.warn(`Unsupported component type: ${elementType}`);
-        return;
-    }
-
-    const colSize: number = step.col_size || this.defaults.col_size;
-
-    const colElement: HTMLElement = this.renderer.createElement('div');
-    this.renderer.addClass(colElement, `col-md-${colSize}`);
-
-    const componentRef: ComponentRef<any> = this.dynamicContainer.createComponent(componentToRender);
-    Object.assign(componentRef.instance, step.params);
-    this.renderer.setAttribute(componentRef.location.nativeElement, 'formControlName', step.params.name);
-    if (componentRef.instance.valueChange && componentRef.instance.valueChange.subscribe) {
-      componentRef.instance.valueChange.subscribe((value: string): void => {
-        step.params.value = value;
-        this.form.get(step.params.name)?.setValue(value);
-        this.handleComponentValueChange(step, value);
-      });
-    }
-
-    this.renderer.appendChild(colElement, componentRef.location.nativeElement);
-    this.renderer.appendChild(this.dynamicContainer.element.nativeElement, colElement);
-
-    step.domElement = colElement;
+    });
   }
 
   public onSubmit(): void {
-    console.log(this.form.value);
-  }
-
-  private hideDependentSteps(step: Step): void {
-    const dependentSteps: Step[] = this.steps.filter(s => s.waitParams?.dependsOn === step.params.name);
-    dependentSteps.forEach(dependentStep => {
-      dependentStep.params.value = "";
-      dependentStep.wait = true;
-      this.form.get(dependentStep.params.name)?.setValue('');
-      if (dependentStep.domElement) {
-        this.renderer.setStyle(dependentStep.domElement, 'display', 'none');
-      }
-      this.hideDependentSteps(dependentStep);
-    });
-  }
-
-  private async handleComponentValueChange(step: Step, value: string): Promise<void> {
-    if (!step.params.value || step.params.value === "") {
-      this.hideDependentSteps(step);
-    } else {
-      const dependentSteps: Step[] = this.steps.filter(s => s.waitParams?.dependsOn === step.params.name);
-      for (const dependentStep of dependentSteps) {
-        dependentStep.wait = false;
-        if (dependentStep.waitParams?.run) {
-          dependentStep.waitParams.run(value);
-        }
-        if (!dependentStep.domElement) {
-          await this.renderComponent(dependentStep);
-        }
-        this.renderer.setStyle(dependentStep.domElement, 'display', 'block');
-        if (!dependentStep.params.value || dependentStep.params.value === "") {
-          this.hideDependentSteps(dependentStep);
-        }
-        await this.handleComponentValueChange(dependentStep, dependentStep.params.value || "");
-      }
+    this.errorService.clearErrors();
+    if (this.form.invalid) {
+      console.error(this.form.value);
+      this.formBuilderComponent.processValidationErrors();
+      return;
     }
+    this.makeDto();
+    if(this.config.autoSubmit) {
+      if(this.config.controller == null || this.config.controller == "") {
+        throw new Error("Controller is required for auto submit");
+      }
+    const method = this.config.type!.toUpperCase() === "POST"
+      ? this.httpClientService.post
+      : this.config.type!.toUpperCase() === "PUT"
+        ? this.httpClientService.put
+        : null;
+
+    if (!method) {
+      throw new Error('Unsupported HTTP method:' + this.config.type);
+    }
+    console.log('Generated DTO:', this.config.dto);
+    console.log('generated form: ', this.form.value);
+    method.call(this.httpClientService, { headers: new HttpHeaders({'Content-Type': 'application/json'}), controller: this.config.controller }, this.config.dto)
+      .subscribe({
+        next: response => {
+          console.log('Success:', response);
+          this.config.successCallBack !== undefined ? this.config.successCallBack.emit(response) : undefined;
+        },
+        error: (err: HttpErrorResponse): void => console.error('Error:', err.message)
+      });
+    } else {
+      if(this.config.formSubmit === undefined) {
+        throw new Error("Form submit event is required for manual submit");
+      }
+      this.config.formSubmit.emit(this.config.dto);
+    }
+    this.closeModal();
+    this.formBuilderComponent.reset().then();
   }
+}
+export interface DynamicModalConfig {
+  steps: Step[];
+  modalId?: string;
+  title?: string;
+  size?: 'sm' | 'lg' | 'xl' | 'md';
+  dto?: any;
+  autoSubmit?: boolean;
+  controller?: string;
+  type?: 'POST' | 'PUT' | 'DELETE';
+  formSubmit?: EventEmitter<any>;
+  successCallBack?: EventEmitter<any>;
 }

@@ -1,4 +1,6 @@
 export class CreateCategory {
   name!: string;
-  type!: number;
+  categoryType!: number;
+  categoryId?: string;
+  description?: string;
 }

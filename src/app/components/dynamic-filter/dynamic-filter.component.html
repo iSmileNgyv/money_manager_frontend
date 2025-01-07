@@ -1,0 +1,15 @@
+<div class="card collapsed-card">
+  <div class="card-header">
+    <h3 class="card-title">Filter</h3>
+    <div class="card-tools">
+      <button class="btn btn-tool" type="button" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-builder [steps]="steps" [form]="form"></app-form-builder>
+      <button type="submit" class="btn btn-default btn-sm btn-block">Search <i class="fas fa-search"></i></button>
+      <button type="button" class="btn btn-danger btn-sm btn-block" (click)="onClearFilter()">Clear filter <i class="fas fa-times"></i></button>
+    </form>
+  </div>
+</div>

@@ -10,14 +10,14 @@ import {ErrorListComponent} from './components/error-list/error-list.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit{
-  title = 'money_manager_frontend';
+  title: string = 'money_manager_frontend';
   errors: { message: string, isResolved: boolean }[] = [];
   constructor(
     private router: Router,
     private errorService: ErrorService
   ) {
   }
-  ngOnInit() {
+  ngOnInit(): void {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         sessionStorage.removeItem('errorListPosition');

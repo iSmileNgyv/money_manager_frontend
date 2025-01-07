@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NgIf} from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import {NgIf} from '@angular/common';
   templateUrl: './textarea.component.html',
   styleUrl: './textarea.component.scss'
 })
-export class TextareaComponent {
+export class TextareaComponent implements OnInit{
   @Input('class') class: string = 'form-control';
   @Input('name') name!: string;
   @Input('value') value: string = "";
@@ -21,8 +21,12 @@ export class TextareaComponent {
   @Input('iconPosition') iconPosition: string = 'right';
   @Input('label') label?: string;
   @Input('id') id?: string = this.name;
-
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  ngOnInit(): void {
+    if (!this.id && this.name) {
+      this.id = this.name;
+    }
+  }
 
   handleValueChange(event: Event): void {
     const target = event.target as HTMLSelectElement;

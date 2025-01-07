@@ -19,21 +19,21 @@ export class DeleteDirective implements OnInit{
       const button: HTMLElement = document.createElement('button');
       const icon: HTMLElement = document.createElement('i');
       icon.setAttribute('class', 'fas fa-trash');
-      button.setAttribute('class', 'btn btn-outline-danger');
+      button.setAttribute('class', this.buttonClass);
       this.renderer.appendChild(this.element.nativeElement, button);
       this.renderer.appendChild(button, icon);
-      button.setAttribute('style', this.style);
+      button.setAttribute('style', this.deleteStyle);
       this.renderer.listen(button, 'click', this.onClick.bind(this));
     } else {
       this.renderer.listen(this.element.nativeElement, 'click', this.onClick.bind(this));
     }
   }
 
-  @Input('style') style: string = 'float: right;';
+  @Input('deleteStyle') deleteStyle: string = 'float: right;';
+  @Input('buttonClass') buttonClass: string = 'btn btn-outline-danger';
   @Input('controller') controller!: string;
-  //@Input('id') id!: string;
   @Input('body') body!: any;
-  @Input('title') title: string = 'Silmək istədiyinizdən əminsiniz?';
+  @Input('title') title: string = 'Silmə sorğusu';
   @Input('createButton') createButton?: boolean = true;
   @Input('message') message: string = 'Silmək istədiyinizdən əminsiniz?';
   @Output('successCallBack') successCallBack: EventEmitter<any> = new EventEmitter<any>();
@@ -42,7 +42,7 @@ export class DeleteDirective implements OnInit{
       this.httpClientService.delete({
         controller: this.controller
       }, this.body).subscribe(data => {
-        this.alertify.message('Deleted successfully', {
+        this.alertify.message('Silindi', {
           dismissOthers: true,
           messageType: MessageType.Succcess,
           position: Position.BottomRight

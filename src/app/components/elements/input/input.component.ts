@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NgIf} from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import {NgIf} from '@angular/common';
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
-export class InputComponent {
+export class InputComponent implements OnInit{
   private readonly defaults: {
     type: string;
     class: string;
@@ -25,21 +25,24 @@ export class InputComponent {
     required: false,
     iconPosition: 'right',
   };
-
   @Input('type') type: string = this.defaults.type;
   @Input('placeholder') placeholder: string = '';
   @Input('class') class: string = this.defaults.class;
   @Input('value') value: string = '';
   @Input('name') name!: string;
-  @Input('id') id?: string = this.name != null ? this.name : '';
+  @Input('id') id?: string;
   @Input('disabled') disabled: boolean = this.defaults.disabled;
   @Input('readonly') readonly: boolean = this.defaults.readonly;
   @Input('required') required: boolean = this.defaults.required;
   @Input('icon') icon?: string;
   @Input('iconPosition') iconPosition: string = this.defaults.iconPosition;
   @Input('label') label?: string;
-
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+  ngOnInit(): void {
+    if (!this.id && this.name) {
+      this.id = this.name;
+    }
+  }
 
   onInputChange(event: Event): void {
     const target = event.target as HTMLInputElement;

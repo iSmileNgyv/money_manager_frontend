@@ -1,0 +1,6 @@
+<ng-container *ngIf="steps && steps.length > 0; else noContent">
+  <div class="row" #dynamicContainer></div>
+</ng-container>
+<ng-template #noContent>
+  <p class="text-muted text-center">Yüklənəcək məzmun yoxdur.</p>
+</ng-template>

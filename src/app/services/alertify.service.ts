@@ -23,11 +23,12 @@ export class AlertifyService
   }
 
   confirm(title: string, message: string, okeyCallBack?: ()=> void, cancelCallBack?: () => void): void {
-    alertify.confirm(title, message);
-    if(okeyCallBack)
-      alertify.confirm().set('onok', okeyCallBack);
-    if(cancelCallBack)
-      alertify.confirm().set('oncancel', cancelCallBack);
+    alertify.confirm(message)
+      .set('title', title)
+      .set('onok', okeyCallBack || function (): void {
+      })
+      .set('oncancel', cancelCallBack || function (): void {
+      });
   }
 }
 

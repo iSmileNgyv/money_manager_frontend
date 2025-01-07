@@ -7,111 +7,16 @@
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a routerLink="">Ana səhifə</a></li>
-            <li class="breadcrumb-item active">Məhsullar</li>
+            <li class="breadcrumb-item"><a href="">Ana səhifə</a></li>
+            <li class="breadcrumb-item active">Kateqoriyalar</li>
           </ol>
         </div>
       </div>
-    </div>
+    </div><!-- /.container-fluid -->
   </section>
   <section class="content">
-    <div class="row">
-      <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
-        <form [formGroup]="form" class="filterForm" appFilter [data]="[
-            {name: 'name', label: 'Kateqoriya adı'},
-            {name: 'type', label: 'Tip', element_type: 'select', options: getTypes()}
-            ]"
-              [model]="filterCategory"
-              (successCallBack)="applyFilter($event)"
-              controller="categories"
-              formClass="filterForm"
-              (clearFilter)="handleSuccess()"
-        >
-        </form>
-      </div>
-      <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
-        <div class="card">
-          <ngx-spinner type="ball-clip-rotate" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
-          <div class="card-header">
-            <a href="javascript:void(0)" style="float: left; border-radius: 20px;" (click)="toggleSearch()" *ngIf="isMobile" class="btn btn-secondary mr-4"><i class="fas fa-filter"></i></a>
-            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" (click)="handleSuccess()" class="btn btn-success ml-2"><i class="fas fa-sync"></i></a>
-            <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal"><i class="fas fa-plus"></i></a>
-          </div>
-          <div class="card-body" infiniteScroll
-               [infiniteScrollDistance]="2"
-               [infiniteScrollThrottle]="50"
-               (scrolled)="onScroll()">
-            <div class="card collapsed-card" *ngFor="let category of categories; let i = index">
-              <div class="card-header">
-                <h3 class="card-title">{{category.name}}</h3>
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                    <i class="fas fa-plus"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="card-body" style="overflow-x: scroll;">
-                <table class="table table-bordered">
-                  <thead>
-                  <tr>
-                    <th>Ad</th>
-                    <th>Tip</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td>{{category.name}}</td>
-                    <td>{{getType(category.type)}}</td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer" appDelete [body]="{id: category.id}" controller="categories" (successCallBack)="handleSuccess()">
-                <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-'+(i + 1)"><i class="fas fa-edit"></i></a>
-                <app-modal
-                  title="Kateqoriya güncəllə"
-                  [modal_id]="'edit-modal-'+ (i + 1)"
-                  size="lg"
-                  [data]="[
-                {name: 'id', value: category.id, type: 'hidden'},
-                {col_size: 6, placeholder: 'Kateqoriya adı', name: 'name', value: category.name},
-                {col_size: 6, name: 'type', element_type: 'select', options: allCategories}
-               ]"
-                  [model]="editCategory"
-                  (successCallBack)="handleSuccess()"
-                  method="put"
-                  controller="categories"
-                  [formClass]="'edit-form'+(i + 1)"
-                ></app-modal>
-                <app-card-footer-information
-                  [model]="category"
-                ></app-card-footer-information>
-              </div>
-              <!-- /.card-footer-->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-dynamic-card-list [createDto]="createCategory" [editDto]="editCategory" controller="categories"
+                           [columns]="{cardTitle: 'name', cardBody: [{label: 'Ad', field: 'name'}, {label: 'Tip', field: 'categoryType', transform: transformValue.bind(this)}]}"
+                           [createModalConfig]="createModalConfig" [editModalConfig]="editModalConfig" [filterSteps]="filterSteps" [filterDto]="filterCategory"></app-dynamic-card-list>
   </section>
 </div>
-<!--<app-modal-->
-<!--  title="Kateqoriya əlavə et"-->
-<!--  modal_id="create-modal"-->
-<!--  size="lg"-->
-<!--  [data]="[-->
-<!--    {col_size: 6, placeholder: 'Kateqoriya adı', name: 'name'},-->
-<!--    {col_size: 6, name: 'type', element_type: 'select', options: getTypes()}-->
-<!--  ]"-->
-<!--  [model]="createCategory"-->
-<!--  (successCallBack)="handleSuccess()"-->
-<!--  controller="categories"-->
-<!--  formClass="create_modal"-->
-<!--&gt;</app-modal>-->
-
-<app-dynamic-modal [steps]="this.steps"
-modalId="create-modal"
-size="lg"
-title="Create category">
-</app-dynamic-modal>

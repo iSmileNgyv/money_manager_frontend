@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, Input, OnInit, Renderer2} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {ErrorService} from "../../services/error.service";
-import {CdkDrag, CdkDragHandle} from "@angular/cdk/drag-drop";
+import {CdkDrag} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-error-list',
@@ -20,28 +20,28 @@ export class ErrorListComponent implements OnInit, AfterViewInit{
   ) {
   }
   @Input() errors: { message: string, isResolved: boolean }[] = [];
-  collapsed = false;
+  collapsed: boolean = false;
   visible: boolean = false;
   position: {x: number, y: number} = { x: 0, y: 0 };
 
-  close() {
+  close(): void {
     this.errorService.clearErrors();
     this.visible = false;
     sessionStorage.removeItem('errorListPosition');
     this.position = {x: 0, y: 0};
   }
 
-  toggleResolved(index: number) {
+  toggleResolved(index: number): void {
     this.errors[index].isResolved = !this.errors[index].isResolved;
   }
 
-  onDragEnded(event: any) {
+  onDragEnded(event: any): void {
     this.position = event.source.getFreeDragPosition();
     sessionStorage.setItem('errorListPosition', JSON.stringify(this.position));
   }
 
-  private restorePosition() {
-    const savedPosition = sessionStorage.getItem('errorListPosition');
+  private restorePosition(): void {
+    const savedPosition: string | null = sessionStorage.getItem('errorListPosition');
     if (savedPosition) {
       this.position = JSON.parse(savedPosition);
     }
@@ -51,14 +51,14 @@ export class ErrorListComponent implements OnInit, AfterViewInit{
     this.errors.splice(index, 1);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.errorService.errors$.subscribe(errors => {
       this.errors = errors.map(error => ({ message: error, isResolved: false }));
       this.visible = errors.length > 0;
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.visible) {
       this.restorePosition();
     }

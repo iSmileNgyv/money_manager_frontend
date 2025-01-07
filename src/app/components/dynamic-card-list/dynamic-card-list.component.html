@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+    <app-dynamic-filter [steps]="filterSteps" [controller]="controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
+  </div>
+  <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
+    <div class="card">
+      <ngx-spinner type="ball-clip-rotate" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
+      <div class="card-header">
+        <a href="javascript:void(0)" style="float: left; border-radius: 20px;" (click)="toggleSearch()" *ngIf="isMobile" class="btn btn-secondary mr-4"><i class="fas fa-filter"></i></a>
+        <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-success ml-2" (click)="handleSuccess()"><i class="fas fa-sync"></i></a>
+        <a href="javascript:void(0)" style="float: right; border-radius: 20px;" class="btn btn-primary" data-toggle="modal" data-target="#create-modal" (click)="openCreateModal()"><i class="fas fa-plus"></i></a>
+      </div>
+      <div class="card-body" infiniteScroll
+           [infiniteScrollDistance]="2"
+           [infiniteScrollThrottle]="50"
+           (scrolled)="onScroll()">
+        <div class="card collapsed-card" *ngFor="let d of data; let i = index">
+          <div class="card-header">
+            <h3 class="card-title">{{ d[columns.cardTitle] }}</h3>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body" style="overflow-x: scroll;">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th *ngFor="let col of columns.cardBody">{{ col.label }}</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td *ngFor="let col of columns.cardBody">
+                  {{ col.transform ? col.transform(d[col.field]) : d[col.field] }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()">
+            <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-' + i" (click)="openEditModal(i, d)"><i class="fas fa-edit"></i></a>
+            <app-card-footer-information [model]="d"></app-card-footer-information>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-container #modalContainer></ng-container>

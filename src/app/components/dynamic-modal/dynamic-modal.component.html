@@ -1,24 +1,24 @@
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="{{modalId}}" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-{{size}}">
+<div class="modal fade" data-backdrop="static" data-keyboard="false" id="{{config.modalId}}" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true" cdkDrag>
+  <div class="modal-dialog modal-{{config.size ?? defaults.size}}">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="dynamicModalLabel">{{title}}</h5>
-        <button type="button" class="btn-close btn btn-outline-danger btn-sm" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="modal-body">
-          <ng-container *ngIf="steps && steps.length > 0; else noContent">
-            <div class="row" #dynamicContainer></div>
-          </ng-container>
-          <ng-template #noContent>
-            <p class="text-muted text-center">Yüklənəcək məzmun yoxdur.</p>
-          </ng-template>
+      <div class="modal-header" style="cursor: move;" cdkDragHandle>
+        <h5 class="modal-title" id="dynamicModalLabel">{{config.title}}</h5>
+        <div class="d-flex align-items-center justify-content-end gap-2" style="position: relative; top: -5px;">
+          <button type="button" class="btn btn-warning btn-xs" (click)="toggleCollapse()" style="width: 24px; height: 24px; border-radius: 50%; padding: 0;">
+            <span *ngIf="isCollapsed"><i class="fas fa-plus fa-xs"></i></span>
+            <span *ngIf="!isCollapsed"><i class="fas fa-minus fa-xs"></i></span>
+          </button>
+          <button type="button" class="btn btn-danger btn-xs" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()" style="width: 24px; height: 24px; border-radius: 50%; padding: 0;">
+            <i class="fas fa-times fa-xs"></i>
+          </button>
         </div>
-        <div class="modal-footer justify-content-between">
-          <button type="button" class="btn btn-danger" style="float: left" data-bs-dismiss="modal" (click)="closeModal()">Bağla</button>
-          <button type="submit" class="btn btn-success" [disabled]="form.invalid">Yadda saxla</button> <!-- Form submit -->
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" [class.d-none]="isCollapsed">
+        <div class="modal-body">
+          <app-form-builder [form]="form" [steps]="config.steps" [formData]="formData"></app-form-builder>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success" style="float: right">Yadda saxla</button>
         </div>
       </form>
     </div>
