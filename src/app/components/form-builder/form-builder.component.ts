@@ -7,7 +7,7 @@ import {
   ComponentRef,
   Renderer2,
   ViewChild,
-  ViewContainerRef, AfterViewInit
+  ViewContainerRef, AfterViewInit, OnInit
 } from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
@@ -16,6 +16,9 @@ import {SelectComponent} from '../elements/select/select.component';
 import {TextareaComponent} from '../elements/textarea/textarea.component';
 import {CheckboxComponent} from '../elements/checkbox/checkbox.component';
 import {ErrorService} from '../../services/error.service';
+import {SelectedImageComponent} from '../elements/selected-image/selected-image.component';
+import {LanguageService} from '../../services/language.service';
+import {TranslatePipe} from '@ngx-translate/core';
 
 type CommonParams = {
   required?: boolean;
@@ -60,6 +63,11 @@ type CheckboxParams = BaseParams & {
   toggle?: boolean;
 }
 
+type SelectImageParams = BaseParams & {
+  value?: string;
+  fullPath?: string;
+}
+
 type StepBase<TParams> = {
   step: number;
   params: TParams;
@@ -84,7 +92,11 @@ export type StepTextarea = StepBase<TextareaParams> & {
 export type StepCheckbox = StepBase<CheckboxParams> & {
   element_type: 'checkbox';
 };
-export type Step = StepInput | StepSelect | StepTextarea | StepCheckbox;
+
+export type StepSelectImage = StepBase<SelectImageParams> & {
+  element_type: 'select-image';
+}
+export type Step = StepInput | StepSelect | StepTextarea | StepCheckbox | StepSelectImage;
 
 
 type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
@@ -95,11 +107,12 @@ type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
   templateUrl: './form-builder.component.html',
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    TranslatePipe
   ],
   styleUrls: ['./form-builder.component.scss']
 })
-export class FormBuilderComponent implements AfterViewInit {
+export class FormBuilderComponent implements AfterViewInit, OnInit {
   @Input('form') form!: FormGroup;
   @Input() steps: Step[] = [];
   @Input('formData') formData?: any;
@@ -118,10 +131,15 @@ export class FormBuilderComponent implements AfterViewInit {
   }
 
   constructor(
-    private fb: FormBuilder,
-    private renderer: Renderer2,
-    private readonly errorService: ErrorService
+    private readonly fb: FormBuilder,
+    private readonly renderer: Renderer2,
+    private readonly errorService: ErrorService,
+    private readonly languageService: LanguageService
   ) {}
+
+  async ngOnInit(): Promise<void> {
+    await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'form-builder');
+  }
 
   async ngAfterViewInit(): Promise<void> {
     this.createForm();
@@ -145,7 +163,13 @@ export class FormBuilderComponent implements AfterViewInit {
     }
     for (const step of this.steps) {
       if (this.formData && this.formData[step.params.name] !== undefined) {
-        step.params.value = this.formData[step.params.name];
+        const formValue: any = this.formData[step.params.name];
+        if (step.element_type === 'select-image' && typeof formValue === 'object') {
+          step.params.value = formValue.path;
+          step.params.fullPath = formValue.fullPath;
+        } else {
+          step.params.value = formValue;
+        }
         this.form.get(step.params.name)?.setValue(step.params.value);
       }
       if (step.wait && step.waitParams?.dependsOn) {
@@ -183,6 +207,9 @@ export class FormBuilderComponent implements AfterViewInit {
       case 'checkbox':
         componentToRender = CheckboxComponent;
         break;
+      case 'select-image':
+        componentToRender = SelectedImageComponent;
+        break;
       default:
         console.warn(`Unsupported component type: ${elementType}`);
         return;
@@ -194,7 +221,21 @@ export class FormBuilderComponent implements AfterViewInit {
     this.renderer.addClass(colElement, `col-md-${colSize}`);
 
     const componentRef: ComponentRef<any> = this.dynamicContainer.createComponent(componentToRender);
+    if (step.element_type === 'select-image') {
+      Object.assign(componentRef.instance, {
+        ...step.params,
+        fullPath: (step.params as SelectImageParams).fullPath
+      });
+    } else {
+      Object.assign(componentRef.instance, step.params);
+    }
+
     Object.assign(componentRef.instance, step.params);
+    if (elementType === 'select-image') {
+      componentRef.instance.imageSelected.subscribe((selectedImage: { path: string; fullPath: string }): void => {
+        this.onImageSelected(selectedImage, step);
+      });
+    }
     this.renderer.setAttribute(componentRef.location.nativeElement, 'formControlName', step.params.name);
     if (componentRef.instance.valueChange && componentRef.instance.valueChange.subscribe) {
       componentRef.instance.valueChange.subscribe((value: string): void => {
@@ -216,6 +257,16 @@ export class FormBuilderComponent implements AfterViewInit {
 
     step.domElement = colElement;
   }
+
+  private onImageSelected(selectedImage: {path: string, fullPath: string}, step: Step): void {
+    if (step) {
+
+      this.form.get(step.params.name)?.setValue(selectedImage.path);
+      step.params.value = selectedImage.path;
+      (step.params as SelectImageParams).fullPath = selectedImage.fullPath;
+    }
+  }
+
 
   private getValidationMessage(step: Step | undefined, errorKey: string): string | null {
     if (step && step.params.validationMessages) {
@@ -264,8 +315,6 @@ export class FormBuilderComponent implements AfterViewInit {
   }
 
   async handleComponentValueChange(step: Step, value: string): Promise<void> {
-    console.warn("267");
-    console.log(step);
     if (!step.params.value || step.params.value === "") {
       this.hideDependentSteps(step);
     } else {
@@ -285,7 +334,5 @@ export class FormBuilderComponent implements AfterViewInit {
         await this.handleComponentValueChange(dependentStep, dependentStep.params.value || "");
       }
     }
-    console.log("288");
-    console.log(step);
   }
 }

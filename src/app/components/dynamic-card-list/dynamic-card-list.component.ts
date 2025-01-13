@@ -105,8 +105,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 
   private sanitizeSteps(steps: Step[]): Step[] {
-
-    const sanitizedSteps = steps.map(step => {
+    const sanitizedSteps: Step[] = steps.map(step => {
       const sanitizedStep = {
         ...step,
         params: {
@@ -114,7 +113,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
           validators: Array.isArray(step.params.validators)
             ? step.params.validators.filter(validator => validator !== null && validator !== undefined)
             : [],
-          value: step.params.value || '', // Varsayılan değer
+          value: step.params.value || '',
         },
         wait: step.wait ?? false,
         waitParams: step.waitParams

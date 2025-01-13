@@ -1,0 +1,24 @@
+<ngx-dropzone (change)="onSelect($event)">
+  <ngx-dropzone-label>{{label}}</ngx-dropzone-label>
+  <ngx-dropzone-image-preview *ngFor="let f of files" [removable]="true" [file]="f" (removed)="onRemove(f)"></ngx-dropzone-image-preview>
+</ngx-dropzone>
+<button type="button" (click)="uploadFiles()" class="btn btn-primary mt-2">
+  <i class="fas fa-upload fa-lg"></i>
+</button>
+<div class="row mt-5">
+  <div class="col-12 col-md-3" *ngFor="let image of images">
+    <div class="card">
+      <div class="card-body">
+        <img src="{{image.fullPath}}" class="img-in-card" />
+      </div>
+      <div class="card-footer" appDelete [body]="{id: image.id}" controller="medias" (successCallBack)="handleSuccess()">
+        <button type="button" class="btn btn-outline-success" style="float: left" [cdkCopyToClipboard]="image.fullPath" (click)="copyMessage()">
+          <i class="fas fa-copy"></i>
+        </button>
+        <button type="button" class="btn btn-outline-primary" style="float: left" *ngIf="canSelect" (click)="onSelectImage(image)">
+          <i class="fas fa-hand-pointer"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

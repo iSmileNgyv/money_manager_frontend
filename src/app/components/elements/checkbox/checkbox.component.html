@@ -7,6 +7,7 @@
       [checked]="checked"
       [required]="required"
       [disabled]="disabled"
+      [style]="style"
       (change)="onCheckboxChange($event)">
     <label *ngIf="label" [for]="id" class="custom-control-label">{{label}}</label>
   </div>

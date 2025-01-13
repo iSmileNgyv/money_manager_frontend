@@ -12,6 +12,12 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
+        <select class="form-control" (change)="changeLanguage($event)" style="width: auto; display: inline-block;">
+          <option value="az" [selected]="currentLang === 'az'">{{'LAYOUT.AZERBAIJAN' | translate}}</option>
+          <option value="en" [selected]="currentLang === 'en'">{{'LAYOUT.ENGLISH' | translate}}</option>
+        </select>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
@@ -68,22 +74,22 @@
             <a class="nav-link" routerLink="category">
               <i class="nav-icon fas fa-cubes"></i>
               <p>
-                Kateqoriyalar
+                {{'LAYOUT.CATEGORIES' | translate}}
               </p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" routerLink="products">
+            <a class="nav-link" routerLink="product">
               <i class="nav-icon fas fa-shopping-basket"></i>
               <p>
-                Məhsullar
+                {{'LAYOUT.PRODUCTS' | translate}}
               </p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" routerLink="images">
+            <a class="nav-link" routerLink="image">
               <i class="fas fa-images nav-icon"></i>
               <p>
                 Şəkillər

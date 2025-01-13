@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {ErrorService} from './services/error.service';
 import {ErrorListComponent} from './components/error-list/error-list.component';
+import {LanguageService} from './services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +11,17 @@ import {ErrorListComponent} from './components/error-list/error-list.component';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit{
-  title: string = 'money_manager_frontend';
+  protected title: string = 'money_manager_frontend';
   errors: { message: string, isResolved: boolean }[] = [];
   constructor(
-    private router: Router,
-    private errorService: ErrorService
-  ) {
-  }
+    private readonly router: Router,
+    private readonly errorService: ErrorService,
+    private readonly languageService: LanguageService
+  ) {}
   ngOnInit(): void {
+    this.languageService.onLanguageChange().subscribe((lang: string) => {
+      console.log(`Dil değişti: ${lang}`);
+    });
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         sessionStorage.removeItem('errorListPosition');

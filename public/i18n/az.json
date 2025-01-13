@@ -1,0 +1,31 @@
+{
+  "COMMON": {
+    "SELECT" : "Seçin",
+    "NAME" : "Ad",
+    "DESCRIPTION" : "Qeyd",
+    "TYPE" : "Tip",
+    "HOMEPAGE" : "Ana səhifə"
+  },
+  "CATEGORY" : {
+    "CATEGORIES" : "Kateqoriyalar",
+    "NAME_REQUIRED": "Kateqoriya adı boş ola bilməz",
+    "TYPE_REQUIRED": "Kateqoriya tipi boş ola bilməz",
+    "ADD_CATEGORY": "Kateqoriya əlavə et",
+    "UPDATE_CATEGORY": "Kateqoriya güncəllə",
+    "PARENT_CATEGORY" : "Üst kateqoriya"
+  },
+  "PRODUCT" : {
+    "PRODUCTS" : "Məhsullar",
+    "NAME_REQUIRED" : "Məhsul adı boş ola bilməz",
+    "ADD_PRODUCT" : "Məhsul əlavə et",
+    "UPDATE_PRODUCT" : "Məhsul güncəllə",
+    "PRICE" : "Qiymət",
+    "CATEGORY" : "Kateqoriya"
+  },
+  "LAYOUT" : {
+    "CATEGORIES" : "Kateqoriyalar",
+    "PRODUCTS" : "Məhsullar",
+    "AZERBAIJAN" : "Azərbaycan",
+    "ENGLISH" : "İngilis"
+  }
+}

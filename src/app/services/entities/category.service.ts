@@ -30,4 +30,21 @@ export class CategoryService {
       });
     });
   }
+
+  async getAll(): Promise<ListCategory[] | undefined> {
+    return new Promise((resolve, reject) => {
+      this.httpClientService.get<ListCategory[]>({
+        controller: "categories",
+        action: 'all'
+      }).subscribe({
+        next: (data: ListCategory[]): void => {
+          resolve(data);
+        },
+        error: (error: HttpErrorResponse): void => {
+          console.error(error.message);
+          reject(error);
+        }
+      });
+    });
+  }
 }

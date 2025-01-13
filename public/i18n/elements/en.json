@@ -1,0 +1,8 @@
+{
+  "ELEMENTS" : {
+    "SELECT_IMAGE" : "Select image",
+    "CHANGE" : "Change",
+    "DELETE" : "Delete",
+    "IMAGE_LIBRARY" : "Image library"
+  }
+}

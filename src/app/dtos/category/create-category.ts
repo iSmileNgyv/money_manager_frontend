@@ -3,4 +3,5 @@ export class CreateCategory {
   categoryType!: number;
   categoryId?: string;
   description?: string;
+  image?: string;
 }

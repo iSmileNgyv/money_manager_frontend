@@ -1,0 +1,34 @@
+<div class="selected-image text-center">
+  <img *ngIf="imagePath" [src]="fullPath" alt="Selected Image" class="img-thumbnail img-fluid mb-3" />
+  <div class="d-grid gap-2 d-md-flex justify-content-center">
+    <button type="button" *ngIf="!imagePath" (click)="openModal()" class="btn btn-default">{{'ELEMENTS.SELECT_IMAGE' | translate}}</button>
+    <button type="button" *ngIf="imagePath" (click)="openModal()" class="btn btn-warning">{{'ELEMENTS.CHANGE' | translate}}</button>
+    <button type="button" *ngIf="imagePath" (click)="deleteImage()" class="btn btn-danger ml-2">{{'ELEMENTS.DELETE' | translate}}</button>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="imageLibraryModal"
+  tabindex="-1"
+  aria-labelledby="imageLibraryModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+  cdkDrag
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="cursor: move;" cdkDragHandle>
+        <h5 class="modal-title" id="imageLibraryModalLabel">{{'ELEMENTS.IMAGE_LIBRARY' | translate}}</h5>
+        <button type="button" class="btn btn-danger btn-xs" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()" style="width: 24px; height: 24px; border-radius: 50%; padding: 0;">
+          <i class="fas fa-times fa-xs"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-image-library
+          [canSelect]="true"
+          (imageSelected)="onImageSelect($event)"
+        ></app-image-library>
+      </div>
+    </div>
+  </div>
+</div>

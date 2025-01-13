@@ -16,11 +16,16 @@
            (scrolled)="onScroll()">
         <div class="card collapsed-card" *ngFor="let d of data; let i = index">
           <div class="card-header">
-            <h3 class="card-title">{{ d[columns.cardTitle] }}</h3>
-            <div class="card-tools">
+            <div class="card-title">
+              {{ d[columns.cardTitle] }}
+            </div>
+            <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-plus"></i>
               </button>
+              <a href="javascript:void(0)" class="btn btn-sm text-primary" data-toggle="modal" [attr.data-target]="'#edit-modal-' + i" (click)="openEditModal(i, d)">
+                <i class="fas fa-edit"></i>
+              </a>
             </div>
           </div>
           <div class="card-body" style="overflow-x: scroll;">

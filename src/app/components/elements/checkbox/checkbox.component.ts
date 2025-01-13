@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {NgClass, NgIf} from '@angular/common';
 
 @Component({
-  selector: 'app-checkbox',
+  selector: 'element-checkbox',
   imports: [
     NgIf,
     NgClass
@@ -16,8 +16,9 @@ export class CheckboxComponent implements OnInit{
   @Input('label') label?: string;
   @Input('checked') checked: boolean = false;
   @Input('disabled') disabled: boolean = false;
-  @Input('class') class?: string;
-  @Input('value') value?: string;
+  @Input('class') class: string = "";
+  @Input('style') style: string = "";
+  @Input('value') value: string = "";
   @Input('required') required: boolean = false;
   @Input('toggle') toggle: boolean = true;
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();

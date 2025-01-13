@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class ErrorService {
+export class ErrorService{
   private errorMessages: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   errors$: Observable<string[]> = this.errorMessages.asObservable();
-  constructor() { }
 
   addError(message: string): void {
     const currentErrors: string[] = this.errorMessages.getValue();

@@ -23,12 +23,11 @@ export class DeleteDirective implements OnInit{
       this.renderer.appendChild(this.element.nativeElement, button);
       this.renderer.appendChild(button, icon);
       button.setAttribute('style', this.deleteStyle);
-      this.renderer.listen(button, 'click', this.onClick.bind(this));
+      this.renderer.listen(button, 'click', (event: Event): void => this.onClick(event));
     } else {
-      this.renderer.listen(this.element.nativeElement, 'click', this.onClick.bind(this));
+      this.renderer.listen(this.element.nativeElement, 'click', (event: Event): void => this.onClick(event));
     }
   }
-
   @Input('deleteStyle') deleteStyle: string = 'float: right;';
   @Input('buttonClass') buttonClass: string = 'btn btn-outline-danger';
   @Input('controller') controller!: string;
@@ -37,7 +36,9 @@ export class DeleteDirective implements OnInit{
   @Input('createButton') createButton?: boolean = true;
   @Input('message') message: string = 'Silmək istədiyinizdən əminsiniz?';
   @Output('successCallBack') successCallBack: EventEmitter<any> = new EventEmitter<any>();
-  onClick(): void {
+  onClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.alertify.confirm(this.title, this.message, () => {
       this.httpClientService.delete({
         controller: this.controller

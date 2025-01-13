@@ -1,5 +1,5 @@
-<div class="modal fade" data-backdrop="static" data-keyboard="false" id="{{config.modalId}}" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true" cdkDrag>
-  <div class="modal-dialog modal-{{config.size ?? defaults.size}}">
+<div class="modal fade" data-keyboard="false" data-bs-backdrop="static" id="{{config.modalId}}" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true" cdkDrag>
+  <div class="modal-dialog modal-{{config.size ?? defaults.size}}" role="document">
     <div class="modal-content">
       <div class="modal-header" style="cursor: move;" cdkDragHandle>
         <h5 class="modal-title" id="dynamicModalLabel">{{config.title}}</h5>
@@ -13,12 +13,12 @@
           </button>
         </div>
       </div>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" [class.d-none]="isCollapsed">
+      <form [formGroup]="form" (ngSubmit)="onSubmit($event)" [class.d-none]="isCollapsed">
         <div class="modal-body">
           <app-form-builder [form]="form" [steps]="config.steps" [formData]="formData"></app-form-builder>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success" style="float: right">Yadda saxla</button>
+          <button type="submit" class="btn btn-success" style="float: right">{{'MODAL.SAVE' | translate}}</button>
         </div>
       </form>
     </div>

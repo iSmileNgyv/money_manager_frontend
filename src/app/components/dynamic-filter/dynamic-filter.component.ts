@@ -1,21 +1,24 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilderComponent, Step} from '../form-builder/form-builder.component';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
 import {HttpClientService} from '../../services/http-client.service';
 import {ErrorService} from '../../services/error.service';
+import {LanguageService} from '../../services/language.service';
+import {TranslatePipe} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dynamic-filter',
   imports: [
     FormBuilderComponent,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslatePipe
   ],
   templateUrl: './dynamic-filter.component.html',
   styleUrl: './dynamic-filter.component.scss'
 })
-export class DynamicFilterComponent {
+export class DynamicFilterComponent implements OnInit {
   protected form!: FormGroup;
   @Input() steps: Step[] = [];
   @Input() controller!: string;
@@ -31,9 +34,14 @@ export class DynamicFilterComponent {
   constructor(
     private readonly httpClientService: HttpClientService,
     private readonly errorService: ErrorService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly languageService: LanguageService
   ) {
     this.form = this.fb.group({});
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-filter');
   }
 
   private makeDto(): void {

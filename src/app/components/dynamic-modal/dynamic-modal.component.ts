@@ -13,11 +13,13 @@ import {HttpClientService} from '../../services/http-client.service';
 import {HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
 import {FormBuilderComponent, Step} from '../form-builder/form-builder.component';
+import {LanguageService} from '../../services/language.service';
+import {TranslatePipe} from '@ngx-translate/core';
 @Component({
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
   styleUrls: ['./dynamic-modal.component.scss'],
-  imports: [NgIf, ReactiveFormsModule, CdkDrag, CdkDragHandle, FormBuilderComponent]
+  imports: [NgIf, ReactiveFormsModule, CdkDrag, CdkDragHandle, FormBuilderComponent, TranslatePipe]
 })
 export class DynamicModalComponent implements OnInit, OnChanges {
   defaults: { element_type: string; size: 'lg'; col_size: number, autoSubmit: boolean, type: 'POST' } = {
@@ -40,11 +42,13 @@ export class DynamicModalComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private readonly errorService: ErrorService,
-    private readonly httpClientService: HttpClientService
+    private readonly httpClientService: HttpClientService,
+    private readonly languageService: LanguageService
   ) {
     this.form = this.fb.group({});
   }
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-modal');
     this.formReady.emit(this.form);
     this.config.steps.forEach(step => {
       const key: string = step.params.name;
@@ -85,7 +89,9 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     });
   }
 
-  public onSubmit(): void {
+  public onSubmit(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
     this.errorService.clearErrors();
     if (this.form.invalid) {
       console.error(this.form.value);

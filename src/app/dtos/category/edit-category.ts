@@ -4,4 +4,5 @@ export class EditCategory {
   categoryType!: number;
   categoryId?: string;
   description?: string;
+  image?: string;
 }
