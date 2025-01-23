@@ -110,6 +110,7 @@ type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
     NgIf,
     TranslatePipe
   ],
+  standalone: true,
   styleUrls: ['./form-builder.component.scss']
 })
 export class FormBuilderComponent implements AfterViewInit, OnInit {
@@ -165,7 +166,7 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
       if (this.formData && this.formData[step.params.name] !== undefined) {
         const formValue: any = this.formData[step.params.name];
         if (step.element_type === 'select-image' && typeof formValue === 'object') {
-          step.params.value = formValue.path;
+          step.params.value = formValue.path != null ? formValue.path : "";
           step.params.fullPath = formValue.fullPath;
         } else {
           step.params.value = formValue;

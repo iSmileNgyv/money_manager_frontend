@@ -16,6 +16,7 @@ import {TranslatePipe} from '@ngx-translate/core';
     TranslatePipe
   ],
   templateUrl: './dynamic-filter.component.html',
+  standalone: true,
   styleUrl: './dynamic-filter.component.scss'
 })
 export class DynamicFilterComponent implements OnInit {

@@ -1,0 +1,29 @@
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>{{'STOCK.OBJECTS' | translate}}</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="">{{'COMMON.HOMEPAGE' | translate}}</a></li>
+            <li class="breadcrumb-item active">{{'STOCK.OBJECTS' | translate}}</li>
+          </ol>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <section class="content">
+    <app-dynamic-card-list
+    [createDto]="createDto"
+    [editDto]="editDto"
+    [filterDto]="filterDto"
+    [createModalConfig]="createModalConfig"
+    [editModalConfig]="editModalConfig"
+    [columns]="columns"
+    [filterSteps]="filterSteps"
+    controller="stocks"
+    ></app-dynamic-card-list>
+  </section>
+</div>

@@ -19,6 +19,7 @@ import {TranslatePipe} from '@ngx-translate/core';
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
   styleUrls: ['./dynamic-modal.component.scss'],
+  standalone: true,
   imports: [NgIf, ReactiveFormsModule, CdkDrag, CdkDragHandle, FormBuilderComponent, TranslatePipe]
 })
 export class DynamicModalComponent implements OnInit, OnChanges {

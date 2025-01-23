@@ -25,7 +25,18 @@
   "LAYOUT" : {
     "CATEGORIES" : "Kateqoriyalar",
     "PRODUCTS" : "Məhsullar",
+    "PAYMENT_METHODS" :  "Ödəmə metodları",
     "AZERBAIJAN" : "Azərbaycan",
     "ENGLISH" : "İngilis"
+  },
+  "PAYMENT_METHOD": {
+    "PAYMENT_METHODS" :  "Ödəmə metodları",
+    "ADD_PAYMENT_METHOD" : "Ödəmə metodu əlavə et",
+    "UPDATE_PAYMENT_METHOD" : "Ödəmə metodu güncəllə"
+  },
+  "STOCK" : {
+    "OBJECTS" : "Obyektlər",
+    "ADD_OBJECT" : "Obyekt əlavə et",
+    "UPDATE_OBJECT" : "Obyekt güncəllə"
   }
 }

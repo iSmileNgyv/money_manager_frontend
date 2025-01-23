@@ -9,6 +9,7 @@ import {FilterProduct} from '../../../dtos/product/filter-product';
 import {Validators} from '@angular/forms';
 import {CategoryService} from '../../../services/entities/category.service';
 import {ListCategory} from '../../../dtos/category/list-category';
+import {CategoryType} from '../../../services/global-functions.service';
 
 @Component({
   selector: 'app-product',
@@ -199,7 +200,7 @@ export class ProductComponent implements OnInit{
   }
 
   async getCategories(): Promise<{value: string, text: string}[]> {
-    const data: ListCategory[] | undefined = await this.categoryService.getAll();
+    const data: ListCategory[] | undefined = await this.categoryService.filterByType(CategoryType.PRODUCT.toString());
     return data?.map(c => ({
       value: c.id,
       text: c.name

@@ -33,8 +33,8 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    //{provide: 'BASE_API_URL', useValue: 'http://localhost:5111/api', multi: true},
-    {provide: 'BASE_API_URL', useValue: 'http://92.118.59.178:8080/api', multi: true},
+    {provide: 'BASE_API_URL', useValue: 'http://localhost:5111/api', multi: true},
+    //{provide: 'BASE_API_URL', useValue: 'http://92.118.59.178:8080/api', multi: true},
     {provide: 'VERSION', useValue: 'v1', multi: true}
   ]
 

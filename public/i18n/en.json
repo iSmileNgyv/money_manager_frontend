@@ -25,7 +25,18 @@
   "LAYOUT" : {
     "CATEGORIES" : "Categories",
     "PRODUCTS" : "Products",
+    "PAYMENT_METHODS" :  "Payment methods",
     "AZERBAIJAN" : "Azerbaijan",
     "ENGLISH" : "English"
+  },
+  "PAYMENT_METHOD" : {
+    "PAYMENT_METHODS" :  "Payment methods",
+    "ADD_PAYMENT_METHOD" : "Add payment method",
+    "UPDATE_PAYMENT_METHOD" : "Update payment method"
+  },
+  "STOCK" : {
+    "OBJECTS" : "Objects",
+    "ADD_OBJECT" : "Add object",
+    "UPDATE_OBJECT" : "Edit object"
   }
 }
