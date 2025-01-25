@@ -26,6 +26,7 @@
     "CATEGORIES" : "Kateqoriyalar",
     "PRODUCTS" : "Məhsullar",
     "PAYMENT_METHODS" :  "Ödəmə metodları",
+    "CASHBACK" : "Geri ödəmələr",
     "AZERBAIJAN" : "Azərbaycan",
     "ENGLISH" : "İngilis"
   },
@@ -38,5 +39,14 @@
     "OBJECTS" : "Obyektlər",
     "ADD_OBJECT" : "Obyekt əlavə et",
     "UPDATE_OBJECT" : "Obyekt güncəllə"
+  },
+  "CASHBACK" : {
+    "CASHBACK" : "Geri ödəmə",
+    "CATEGORY" : "Kateqoriya",
+    "PAYMENT_METHOD": "Ödəmə metodu",
+    "OBJECT": "Obyekt",
+    "PERCENTAGE": "Faiz",
+    "ADD_CASHBACK": "Keşbek əlavə et",
+    "EDIT_CASHBACK": "Keşbek güncəllə"
   }
 }

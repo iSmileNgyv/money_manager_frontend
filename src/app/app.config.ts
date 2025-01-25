@@ -4,9 +4,16 @@ import { routes } from './app.routes';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule, provideAnimations} from '@angular/platform-browser/animations';
 import {provideToastr} from 'ngx-toastr';
-import {HttpClient, provideHttpClient, withFetch} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withFetch,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {TranslateLoader, TranslateModule, TranslatePipe} from '@ngx-translate/core';
+import {HttpErrorHandlerInterceptorService} from './services/http-error-handler-interceptor.service';
 
 function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, 'i18n/', '.json');
@@ -17,9 +24,10 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideToastr(),
     provideHttpClient(
-      withFetch()//,
-      //withInterceptorsFromDi(),
+      withFetch(),
+      withInterceptorsFromDi()
     ),
+    {provide: HTTP_INTERCEPTORS, useClass: HttpErrorHandlerInterceptorService, multi: true},
     TranslatePipe,
     importProvidersFrom(
       BrowserModule,

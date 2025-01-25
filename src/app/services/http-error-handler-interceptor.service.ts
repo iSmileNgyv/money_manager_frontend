@@ -24,7 +24,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem("accessToken");
+    const token: string | null = localStorage.getItem("accessToken");
 
     // `accessToken` varsa bunu her isteğe ekle
     const authReq = token
@@ -39,7 +39,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
     );
   }
 
-  private handleErrorMessages(error: HttpErrorResponse) {
+  private handleErrorMessages(error: HttpErrorResponse): void {
     let errorMessage = "Bilinməyən bir xəta baş verdi";
     if (error.error && typeof error.error === 'string') {
       errorMessage = error.error;

@@ -26,6 +26,7 @@
     "CATEGORIES" : "Categories",
     "PRODUCTS" : "Products",
     "PAYMENT_METHODS" :  "Payment methods",
+    "CASHBACK" : "Cashback",
     "AZERBAIJAN" : "Azerbaijan",
     "ENGLISH" : "English"
   },
@@ -38,5 +39,14 @@
     "OBJECTS" : "Objects",
     "ADD_OBJECT" : "Add object",
     "UPDATE_OBJECT" : "Edit object"
+  },
+  "CASHBACK" : {
+    "CASHBACK" : "Cashback",
+    "CATEGORY" : "Category",
+    "PAYMENT_METHOD": "Payment method",
+    "OBJECT": "Object",
+    "PERCENTAGE": "Percentage",
+    "ADD_CASHBACK": "Add cashback",
+    "EDIT_CASHBACK": "Edit cashback"
   }
 }

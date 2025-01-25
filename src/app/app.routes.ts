@@ -28,6 +28,10 @@ export const routes: Routes = [
       {
         path: "stock",
         loadComponent: () => import('../app/components/user/stock/stock.component').then(c => c.StockComponent)
+      },
+      {
+        path: "cashback",
+        loadComponent: () => import('../app/components/user/cashback/cashback.component').then(c => c.CashbackComponent)
       }
     ]
   }
