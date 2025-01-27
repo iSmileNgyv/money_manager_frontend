@@ -17,7 +17,14 @@
         <div class="card collapsed-card" *ngFor="let d of data; let i = index">
           <div class="card-header">
             <div class="card-title">
-              {{ d[columns.cardTitle] }}
+              <table style="{{columns.cardTitleStyle}}" class="{{columns.cardTitleClass}}">
+                <tr>
+                  <td *ngFor="let title of columns.cardTitle" style="{{title.style}}" class="{{title.class}}">
+                    <img *ngIf="title.image" src="{{ d[title.image].fullPath }}" width="25" height="25" alt=""/>
+                    {{ d[title.title] }}{{title.implode ? title.implode : ''}}
+                  </td>
+                </tr>
+              </table>
             </div>
             <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">

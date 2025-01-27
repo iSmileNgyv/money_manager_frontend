@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {ErrorService} from './services/error.service';
 import {ErrorListComponent} from './components/error-list/error-list.component';
@@ -15,6 +15,7 @@ export class AppComponent implements OnInit{
   errors: { message: string, isResolved: boolean }[] = [];
   constructor(
     private readonly router: Router,
+    private readonly renderer: Renderer2,
     private readonly errorService: ErrorService,
     private readonly languageService: LanguageService
   ) {}
@@ -25,11 +26,11 @@ export class AppComponent implements OnInit{
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         sessionStorage.removeItem('errorListPosition');
-        /*if (this.router.url.includes('auth/')) {
+        if (this.router.url.includes('auth/')) {
           this.renderer.setAttribute(document.body, 'class', 'hold-transition login-page');
         } else {
           this.renderer.setAttribute(document.body, 'class', 'hold-transition sidebar-mini sidebar-collapse');
-        }*/
+        }
       }
     });
     this.errorService.errors$.subscribe(errors => {

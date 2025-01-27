@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
 import {CreatePaymentMethod} from '../../../dtos/payment-method/create-payment-method';
 import {EditPaymentMethod} from '../../../dtos/payment-method/edit-payment-method';
 import {FilterPaymentMethod} from '../../../dtos/payment-method/filter-payment-method';
@@ -20,7 +20,7 @@ export class PaymentMethodComponent implements OnInit{
   protected createDto: CreatePaymentMethod = new CreatePaymentMethod();
   protected editDto: EditPaymentMethod = new EditPaymentMethod();
   protected filterDto: FilterPaymentMethod = new FilterPaymentMethod();
-  protected columns: any = [];
+  protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
@@ -101,7 +101,9 @@ export class PaymentMethodComponent implements OnInit{
     ];
 
     this.columns = {
-      cardTitle: 'name',
+      cardTitle: [
+        {title: 'name', image: 'image'}
+      ],
       cardBody: [
         {label: this.translate.instant('COMMON.NAME'), field: 'name'}
       ]

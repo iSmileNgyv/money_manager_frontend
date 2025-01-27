@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import {authGuard} from './guards/common/auth.guard';
+import {loginGuard} from './guards/common/login.guard';
 
 export const routes: Routes = [
   {
@@ -32,7 +34,23 @@ export const routes: Routes = [
       {
         path: "cashback",
         loadComponent: () => import('../app/components/user/cashback/cashback.component').then(c => c.CashbackComponent)
+      },
+      {
+        path: "operation",
+        loadComponent: () => import('../app/components/user/transaction/transaction.component').then(c => c.TransactionComponent)
       }
-    ]
+    ],
+    canActivate: [authGuard]
+  },
+  {
+    path: "auth",
+    loadComponent: () => import('../app/components/auth/layout/layout.component').then(c => c.LayoutComponent),
+    children: [
+      {
+        path: "login",
+        loadComponent: () => import('../app/components/auth/login/login.component').then(c => c.LoginComponent)
+      }
+    ],
+    canActivate: [loginGuard]
   }
 ];

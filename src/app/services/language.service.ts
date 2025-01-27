@@ -39,10 +39,12 @@ export class LanguageService {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 
-  async loadCustomTranslations(lang: string, module: string): Promise<void> {
-    const filePath = `i18n/${module}/${lang}.json`;
+  async loadCustomTranslations(lang?: string, module?: string): Promise<void> {
+    const filePath = module ? `i18n/${module}/${lang}.json` : `i18n/${lang}.json`;
     try {
       const translations: Object = await firstValueFrom(this.http.get(filePath));
+      if(lang == null)
+        lang = this.getCurrentLanguage();
       this.translate.setTranslation(lang, translations, true); // Mevcut dillere ekle
       console.log(`Çeviriler yüklendi: ${filePath}`);
     } catch (error) {

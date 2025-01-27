@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
-import {RouterLink, RouterOutlet} from "@angular/router";
+import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {LanguageService} from '../../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import {AlertifyService} from '../../../services/alertify.service';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-layouts',
@@ -16,7 +18,10 @@ import {TranslatePipe} from '@ngx-translate/core';
 })
 export class LayoutsComponent{
   constructor(
-    private readonly languageService: LanguageService
+    private readonly languageService: LanguageService,
+    private readonly alertifyService: AlertifyService,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {
 
   }
@@ -29,5 +34,12 @@ export class LayoutsComponent{
   get currentLang(): string {
     return this.languageService.getCurrentLanguage();
   }
-  logout(): void {}
+  logout() {
+    this.alertifyService.confirm("Çıxış","Çıxış etmək istədiyinizdən əminsiniz?", () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      this.authService.identityCheck();
+      this.router.navigate(["/auth/login"]).then();
+    });
+  }
 }

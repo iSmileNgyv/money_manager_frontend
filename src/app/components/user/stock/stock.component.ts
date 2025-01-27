@@ -5,7 +5,7 @@ import {FilterStock} from '../../../dtos/stock/filter-stock';
 import {DynamicModalConfig} from '../../dynamic-modal/dynamic-modal.component';
 import {Step} from '../../form-builder/form-builder.component';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
 
 @Component({
   selector: 'app-stock',
@@ -20,7 +20,7 @@ export class StockComponent implements OnInit{
   protected createDto: CreateStock = new CreateStock();
   protected editDto: EditStock = new EditStock();
   protected filterDto: FilterStock = new FilterStock();
-  protected columns: any = [];
+  protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
@@ -102,7 +102,9 @@ export class StockComponent implements OnInit{
     ];
 
     this.columns = {
-      cardTitle: 'name',
+      cardTitle: [
+        {title: 'name', image: 'image'}
+      ],
       cardBody: [
         {label: this.translate.instant('COMMON.NAME'), field: 'name'}
       ]

@@ -6,7 +6,7 @@ import {FilterCategory} from '../../../dtos/category/filter-category';
 import {GlobalFunctionsService} from '../../../services/global-functions.service';
 import {DynamicModalConfig} from '../../dynamic-modal/dynamic-modal.component';
 import {Step} from '../../form-builder/form-builder.component';
-import {DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
 import {CategoryService} from '../../../services/entities/category.service';
 import {ListCategory} from '../../../dtos/category/list-category';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
@@ -29,7 +29,7 @@ export class CategoryComponent implements OnInit{
     private readonly service: CategoryService,
     protected readonly translate: TranslateService
   ) {}
-  protected columns: any = [];
+  protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
@@ -43,8 +43,7 @@ export class CategoryComponent implements OnInit{
         {step: 5, element_type: 'input', params: {type: 'hidden', name: 'id', label: ''}, wait: false},
         {step: 6, element_type: 'select-image', params: {label: '', name: 'image'}, wait: false}
       ],
-      title: this.translate.instant('CATEGORY.UPDATE_CATEGORY'),
-      controller: 'categories'
+      title: this.translate.instant('CATEGORY.UPDATE_CATEGORY')
     };
     this.createModalConfig = {
       steps: [
@@ -54,10 +53,6 @@ export class CategoryComponent implements OnInit{
         {step: 4, element_type: 'textarea', params: {name: 'description', label: this.translate.instant('COMMON.DESCRIPTION')}, wait: false},
         {step: 5, element_type: 'select-image', params: {label: '', name: 'image', validators: [Validators.required], validationMessages: {required: 'Şəkil seçmədiniz'}}, wait: false}
       ],
-      dto: this.createCategory,
-      controller: 'categories',
-      modalId: 'create-modal',
-      type: 'POST',
       title: this.translate.instant('CATEGORY.ADD_CATEGORY')
     };
     this.filterSteps = [
@@ -65,7 +60,9 @@ export class CategoryComponent implements OnInit{
       {step: 2, element_type: 'select', params: {name: 'categoryType', label: this.translate.instant('COMMON.TYPE'), options: this.getTypes()}, wait: false}
     ];
     this.columns = {
-      cardTitle: 'name',
+      cardTitle: [
+        {title: 'name', image: 'image'}
+      ],
       cardBody: [
         {label: this.translate.instant('COMMON.NAME'), field: 'name'},
         {label: this.translate.instant('COMMON.TYPE'), field: 'categoryType', transform: this.transformValue.bind(this)},

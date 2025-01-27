@@ -48,7 +48,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   @Input('createModalConfig') createModalConfig!: DynamicModalConfig;
   @Input('editModalConfig') editModalConfig!: DynamicModalConfig;
   @Input('filterSteps') filterSteps: Step[] = [];
-  @Input('columns') columns!: { cardTitle: string; cardBody: { label: string; field: string, transform?: (value: any) => any }[] };
+  @Input('columns') columns!: DynamicCardListColumns;
   @Input('controller') controller!: string;
   @ViewChild('modalContainer', { read: ViewContainerRef, static: true }) modalContainer!: ViewContainerRef;
   private currentModalRef: ComponentRef<DynamicModalComponent> | null = null;
@@ -241,4 +241,10 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   protected toggleSearch(): void {
     this.isSearchVisible = !this.isSearchVisible;
   }
+}
+export interface DynamicCardListColumns {
+  cardTitle: {title: string, style?: string, image?: string, implode?: string, class?: string}[];
+  cardTitleStyle?: string;
+  cardTitleClass?: string;
+  cardBody: {label: string, field: string, transform?: (value: any) => any}[];
 }

@@ -11,7 +11,7 @@ import {ListPaymentMethod} from '../../../dtos/payment-method/list-payment-metho
 import {PaymentMethodService} from '../../../services/entities/payment-method.service';
 import {StockService} from '../../../services/entities/stock.service';
 import {ListStock} from '../../../dtos/stock/list-stock';
-import {DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
 
 @Component({
   selector: 'app-cashback',
@@ -26,7 +26,7 @@ export class CashbackComponent implements OnInit{
   protected createCashback: CreateCashback = new CreateCashback();
   protected editCashback: EditCashback = new EditCashback();
   protected filterCashback: FilterCashback = new FilterCashback();
-  protected columns: any = [];
+  protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
@@ -140,7 +140,11 @@ export class CashbackComponent implements OnInit{
       title: this.translate.instant('CASHBACK.EDIT_CASHBACK')
     };
     this.columns = {
-      cardTitle: 'categoryName',
+      cardTitle: [
+        {title: 'categoryName', style: 'padding-right: 150px;'},
+        {title: 'paymentMethodName', style: 'padding-right: 150px;'},
+        {title: 'percentage', implode: ' %', style: 'padding-right: 150px;', class: 'text-success'}
+      ],
       cardBody: [
         {label: this.translate.instant('COMMON.NAME'), field: 'paymentMethodName'},
         {label: this.translate.instant('CASHBACK.OBJECT'), field: 'stockName'},

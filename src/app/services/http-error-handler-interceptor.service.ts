@@ -24,23 +24,21 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log(req.url);
     const token: string | null = localStorage.getItem("accessToken");
-
-    // `accessToken` varsa bunu her isteğe ekle
-    const authReq = token
+    const authReq: HttpRequest<any> = token
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
       : req;
-
     return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
+      catchError((error: HttpErrorResponse): Observable<any> => {
         this.handleErrorMessages(error);
-        return throwError(() => error);
+        return throwError((): HttpErrorResponse => error);
       })
     );
   }
 
   private handleErrorMessages(error: HttpErrorResponse): void {
-    let errorMessage = "Bilinməyən bir xəta baş verdi";
+    let errorMessage: string = "Bilinməyən bir xəta baş verdi";
     if (error.error && typeof error.error === 'string') {
       errorMessage = error.error;
     } else if (error.error && error.error.ErrorMessage) {
