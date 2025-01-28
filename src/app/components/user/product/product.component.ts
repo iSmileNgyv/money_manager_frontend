@@ -33,11 +33,10 @@ export class ProductComponent implements OnInit{
     private readonly categoryService: CategoryService
   ) {}
 
-  ngOnInit(): void {
-    this.getCategories().then((data: {value: string, text: string}[]): void => {
-      this.createModalConfig = {
-        steps: [
-          {
+  async ngOnInit(): Promise<void> {
+    this.createModalConfig = {
+      steps: [
+        {
             step: 1,
             element_type: 'input',
             params: {
@@ -57,7 +56,7 @@ export class ProductComponent implements OnInit{
             element_type: 'select',
             params: {
               name: 'categoryId',
-              options: data,
+              options: await this.getCategories(),
               label: this.translate.instant('PRODUCT.CATEGORY')
             },
             wait: false
@@ -118,7 +117,7 @@ export class ProductComponent implements OnInit{
             element_type: 'select',
             params: {
               name: 'categoryId',
-              options: data,
+              options: await this.getCategories(),
               label: this.translate.instant('PRODUCT.CATEGORY')
             },
             wait: false
@@ -181,13 +180,12 @@ export class ProductComponent implements OnInit{
           element_type: 'select',
           params: {
             name: 'categoryId',
-            options: data,
+            options: await this.getCategories(),
             label: this.translate.instant('PRODUCT.CATEGORY')
           },
           wait: false
         }
       ];
-    });
 
     this.columns = {
       cardTitle: [

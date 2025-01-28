@@ -9,6 +9,7 @@ import {StockService} from '../../../services/entities/stock.service';
 import {ListStock} from '../../../dtos/stock/list-stock';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ListCategory} from '../../../dtos/category/list-category';
+import {DynamicCardListColumns} from '../../dynamic-card-list/dynamic-card-list.component';
 
 @Component({
   selector: 'app-transaction',
@@ -21,7 +22,7 @@ import {ListCategory} from '../../../dtos/category/list-category';
 export class TransactionComponent implements OnInit{
   protected createTransaction: CreateTransaction = new CreateTransaction();
   protected editTransaction: EditTransaction = new EditTransaction();
-  protected columns: any = [];
+  protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
 

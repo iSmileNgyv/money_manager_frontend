@@ -120,6 +120,7 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
   @Output() resetForm: EventEmitter<void> = new EventEmitter<void>();
+  @Input() isLoading: boolean = true;
 
   async reset(): Promise<void> {
     this.form.reset();
