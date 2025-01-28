@@ -120,7 +120,6 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
   @Output() resetForm: EventEmitter<void> = new EventEmitter<void>();
-  @Input() isLoading: boolean = true;
 
   async reset(): Promise<void> {
     this.form.reset();
@@ -159,6 +158,7 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   }
 
   private async renderSteps(): Promise<void> {
+    console.log(this.steps);
     this.steps.sort((a: Step, b: Step): number => a.step - b.step);
     if (this.dynamicContainer) {
       this.dynamicContainer.clear();
