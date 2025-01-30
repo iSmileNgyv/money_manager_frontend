@@ -1,8 +1,8 @@
 <div class="row">
-  <div class="col-md-2" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
+  <div class="col-md-2" *ngIf="!ignoreFilter" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
     <app-dynamic-filter [steps]="filterSteps" [controller]="controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
   </div>
-  <div [class.col-md-10]="true" [class.col-md-12]="isMobile && !isSearchVisible">
+  <div [class.col-md-10]="true" [class.col-md-12]="(isMobile && !isSearchVisible) || ignoreFilter">
     <div class="card">
       <ngx-spinner type="ball-clip-rotate" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
       <div class="card-header">
@@ -21,7 +21,7 @@
                 <tr>
                   <td *ngFor="let title of columns.cardTitle" style="{{title.style}}" class="{{title.class}}">
                     <img *ngIf="title.image" src="{{ d[title.image].fullPath }}" width="25" height="25" alt=""/>
-                    {{ d[title.title] }}{{title.implode ? title.implode : ''}}
+                    <span>{{ title.transform ? title.transform(d[title.title], title.implode) : title.implode ? d[title.title] + title.implode : d[title.title] }}</span>
                   </td>
                 </tr>
               </table>
@@ -29,6 +29,12 @@
             <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-plus"></i>
+              </button>
+              <button *ngFor="let btn of customButtons"
+                      class="btn btn-sm"
+                      [ngClass]="btn.class"
+                      (click)="btn.clickHandler?.(d)">
+                <i *ngIf="btn.icon" [ngClass]="btn.icon"></i> {{ btn.label }}
               </button>
               <a href="javascript:void(0)" class="btn btn-sm text-primary" data-toggle="modal" [attr.data-target]="'#edit-modal-' + i" (click)="openEditModal(i, d)">
                 <i class="fas fa-edit"></i>
@@ -39,13 +45,16 @@
             <table class="table table-bordered">
               <thead>
               <tr>
-                <th *ngFor="let col of columns.cardBody">{{ col.label }}</th>
+                <th *ngFor="let col of columns.cardBody">
+                  {{ col.label }}
+                </th>
               </tr>
               </thead>
               <tbody>
               <tr>
-                <td *ngFor="let col of columns.cardBody">
-                  {{ col.transform ? col.transform(d[col.field]) : d[col.field] }}
+                <td *ngFor="let col of columns.cardBody" class="{{col.class}}" style="{{col.style}}">
+                  <img *ngIf="col.image" src="{{ d[col.image].fullPath }}" width="25" height="25" alt=""/>
+                  <span>{{ col.transform ? col.transform(d[col.field]) : d[col.field] }}</span>
                 </td>
               </tr>
               </tbody>

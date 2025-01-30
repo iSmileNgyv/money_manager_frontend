@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NgIf} from '@angular/common';
 
 @Component({
@@ -9,7 +9,7 @@ import {NgIf} from '@angular/common';
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
-export class InputComponent implements OnInit{
+export class InputComponent implements OnInit, OnChanges{
   private readonly defaults: {
     type: string;
     class: string;
@@ -41,6 +41,13 @@ export class InputComponent implements OnInit{
   ngOnInit(): void {
     if (!this.id && this.name) {
       this.id = this.name;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes['value'] && !changes['value'].isFirstChange()) {
+      this.valueChange.emit(this.value);
     }
   }
 

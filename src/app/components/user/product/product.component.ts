@@ -207,12 +207,14 @@ export class ProductComponent implements OnInit{
       ]
     };
   }
+
   async getCategories(): Promise<{value: string, text: string}[]> {
     const data: ListCategory[] | undefined = await this.categoryService.filterByType(CategoryType.PRODUCT.toString());
-    return data?.map(c => ({
+    const result: {value: string, text: string}[] = data?.map(c => ({
       value: c.id,
       text: c.name
     })) || [];
+    return [{ value: '', text: this.translate.instant('COMMON.SELECT') }, ...result];
   }
 
 }

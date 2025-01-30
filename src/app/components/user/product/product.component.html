@@ -1,4 +1,4 @@
-<div class="content-wrapper" *ngIf="isLoaded">
+<div class="content-wrapper">
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -14,7 +14,7 @@
       </div>
     </div><!-- /.container-fluid -->
   </section>
-  <section class="content">
+  <section class="content" *ngIf="isLoaded">
     <app-dynamic-card-list  [createDto]="createProduct" [editDto]="editProduct" controller="products"
     [createModalConfig]="createModalConfig" [editModalConfig]="editModalConfig" [filterSteps]="filterSteps" [filterDto]="filterProduct" [columns]="columns"></app-dynamic-card-list>
   </section>

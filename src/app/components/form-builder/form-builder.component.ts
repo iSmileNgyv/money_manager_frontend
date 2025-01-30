@@ -19,7 +19,7 @@ import {ErrorService} from '../../services/error.service';
 import {SelectedImageComponent} from '../elements/selected-image/selected-image.component';
 import {LanguageService} from '../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
-
+declare var $: any;
 type CommonParams = {
   required?: boolean;
   disabled?: boolean;
@@ -73,6 +73,7 @@ type StepBase<TParams> = {
   params: TParams;
   col_size?: number;
   domElement?: HTMLElement;
+  onChange?: (value: any) => void;
 } & (
   | { wait: true; waitParams: { dependsOn: string; [key: string]: any, options?: {value: string; text: string}[], value?: string, run?: (value: string, defaultValue?: string) => Promise<void>  } }
   | { wait: false; waitParams?: never }
@@ -114,9 +115,10 @@ type AtLeastOne<T, Keys extends keyof T> = Partial<T> &
   styleUrls: ['./form-builder.component.scss']
 })
 export class FormBuilderComponent implements AfterViewInit, OnInit {
-  @Input('form') form!: FormGroup;
+  @Input() form!: FormGroup;
   @Input() steps: Step[] = [];
-  @Input('formData') formData?: any;
+  @Input() formData?: any;
+  @Input() dto?: any;
   @Output() formSubmit: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
   @Output() resetForm: EventEmitter<void> = new EventEmitter<void>();
@@ -150,15 +152,30 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   private createForm(): void {
     this.steps.forEach(step => {
       const control: FormControl<string | null> = this.fb.control(
-        step.params.value || '',
+        step.params.value ?? '',
         step.params.validators || []
       );
       this.form.addControl(step.params.name, control);
     });
   }
 
+  makeDto(): void {
+    console.log("Steps", this.steps);
+    Object.keys(this.dto).forEach(key => {
+      const step: Step | undefined = this.steps.find(s => s.params.name === key);
+      const formValue: any = this.form.value[key];
+      if (step) {
+        if (formValue === 'true' || formValue === 'false') {
+          this.dto[key] = formValue === 'true';
+        } else {
+          this.dto[key] = formValue || $("#" + key).val() || null;
+        }
+      }
+    });
+    console.log("Generated dto: ", this.dto);
+  }
+
   private async renderSteps(): Promise<void> {
-    console.log(this.steps);
     this.steps.sort((a: Step, b: Step): number => a.step - b.step);
     if (this.dynamicContainer) {
       this.dynamicContainer.clear();
@@ -195,6 +212,9 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
     switch (elementType) {
       case 'input':
         componentToRender = InputComponent;
+        if(step.params.value) {
+          this.form.get(step.params.name)?.setValue(step.params.value);
+        }
         break;
       case 'select':
         componentToRender = SelectComponent;
@@ -262,7 +282,6 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
 
   private onImageSelected(selectedImage: {path: string, fullPath: string}, step: Step): void {
     if (step) {
-
       this.form.get(step.params.name)?.setValue(selectedImage.path);
       step.params.value = selectedImage.path;
       (step.params as SelectImageParams).fullPath = selectedImage.fullPath;
@@ -316,7 +335,10 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
     });
   }
 
-  async handleComponentValueChange(step: Step, value: string): Promise<void> {
+  async handleComponentValueChange(step: Step, value: string, isDirectChange: boolean = true): Promise<void> {
+    if (isDirectChange && step.onChange) {
+      step.onChange(value);
+    }
     if (!step.params.value || step.params.value === "") {
       this.hideDependentSteps(step);
     } else {
@@ -333,7 +355,7 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
         if (!dependentStep.params.value || dependentStep.params.value === "") {
           this.hideDependentSteps(dependentStep);
         }
-        await this.handleComponentValueChange(dependentStep, dependentStep.params.value || "");
+        await this.handleComponentValueChange(dependentStep, dependentStep.params.value || "", false);
       }
     }
   }

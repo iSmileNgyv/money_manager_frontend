@@ -14,7 +14,15 @@
       </div>
     </div><!-- /.container-fluid -->
   </section>
-  <section class="content">
-
+  <section class="content" *ngIf="isLoaded">
+    <app-dynamic-card-list
+    [createDto]="createTransaction"
+    [editDto]="editTransaction"
+    [columns]="columns"
+    [createModalConfig]="createModalConfig"
+    [editModalConfig]="editModalConfig"
+    [customButtons]="customButtons"
+    controller="transactions"
+    ></app-dynamic-card-list>
   </section>
 </div>

@@ -15,7 +15,7 @@
       </div>
       <form [formGroup]="form" (ngSubmit)="onSubmit($event)" [class.d-none]="isCollapsed">
         <div class="modal-body">
-          <app-form-builder [form]="form" [steps]="config.steps" [formData]="formData"></app-form-builder>
+          <app-form-builder [form]="form" [steps]="config.steps" [formData]="formData" [dto]="config.dto"></app-form-builder>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-success" style="float: right">{{'MODAL.SAVE' | translate}}</button>

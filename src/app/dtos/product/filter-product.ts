@@ -1,3 +1,4 @@
 export class FilterProduct {
-  name!: string;
+  name?: string;
+  categoryId?: string;
 }

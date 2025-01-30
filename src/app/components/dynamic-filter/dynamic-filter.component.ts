@@ -45,7 +45,7 @@ export class DynamicFilterComponent implements OnInit {
     await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-filter');
   }
 
-  private makeDto(): void {
+  makeDto(): void {
     Object.keys(this.dto).forEach(key => {
       const step: Step | undefined = this.steps.find(s => s.params.name === key);
       const formValue: any = this.form.value[key];
@@ -57,7 +57,6 @@ export class DynamicFilterComponent implements OnInit {
         }
       }
     });
-    console.log('Generated DTO:', this.dto);
   }
 
   async onClearFilter(): Promise<void> {

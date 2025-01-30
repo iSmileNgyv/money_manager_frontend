@@ -1,10 +1,13 @@
 import {
-  Component, ComponentRef,
+  Component,
+  ComponentRef,
   EventEmitter,
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges, ViewChild, ViewContainerRef
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {NgxSpinnerComponent, NgxSpinnerService} from 'ngx-spinner';
 import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
@@ -50,6 +53,8 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   @Input('filterSteps') filterSteps: Step[] = [];
   @Input('columns') columns!: DynamicCardListColumns;
   @Input('controller') controller!: string;
+  @Input() ignoreFilter: boolean = false;
+  @Input() customButtons: DynamicCardListCustomButtons[] = [];
   @ViewChild('modalContainer', { read: ViewContainerRef, static: true }) modalContainer!: ViewContainerRef;
   private currentModalRef: ComponentRef<DynamicModalComponent> | null = null;
   protected successEmitter: EventEmitter<void> = new EventEmitter<void>();
@@ -105,8 +110,8 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 
   private sanitizeSteps(steps: Step[]): Step[] {
-    const sanitizedSteps: Step[] = steps.map(step => {
-      const sanitizedStep = {
+    return steps.map(step => {
+      return {
         ...step,
         params: {
           ...step.params,
@@ -117,15 +122,11 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
         },
         wait: step.wait ?? false,
         waitParams: step.waitParams
-          ? { ...step.waitParams, run: step.waitParams.run }
+          ? {...step.waitParams, run: step.waitParams.run}
           : undefined,
         col_size: step.col_size || 12,
       } as Step;
-
-      return sanitizedStep;
     });
-
-    return sanitizedSteps;
   }
 
   openCreateModal(): void {
@@ -146,7 +147,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
       document.body.appendChild(backdrop);
       document.body.classList.add('modal-open');
     }
-    this.currentModalRef.instance.close.subscribe(() => this.closeExistingModal());
+    this.currentModalRef.instance.close.subscribe((): void => this.closeExistingModal());
   }
 
   openEditModal(index: number, data: any): void {
@@ -243,8 +244,15 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 }
 export interface DynamicCardListColumns {
-  cardTitle: {title: string, style?: string, image?: string, implode?: string, class?: string}[];
+  cardTitle: {title: string, style?: string, image?: string, implode?: string, class?: string, transform?: (value: any, implode?: string) => any}[];
   cardTitleStyle?: string;
   cardTitleClass?: string;
-  cardBody: {label: string, field: string, transform?: (value: any) => any}[];
+  cardBody: {label: string, field: string, class?: string, style?: string, transform?: (value: any) => any, image?: string}[];
+}
+
+export interface DynamicCardListCustomButtons {
+  label?: string;
+  icon?: string;
+  class?: string;
+  clickHandler?: (data: any) => void;
 }

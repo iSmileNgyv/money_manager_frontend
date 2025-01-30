@@ -4,7 +4,7 @@ import {
   ViewChild,
   ViewContainerRef,
   ElementRef,
-  EventEmitter, OnInit, Output, OnChanges, SimpleChanges
+  EventEmitter, OnInit, Output, OnChanges
 } from '@angular/core';
 import { NgIf } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
@@ -30,9 +30,9 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     autoSubmit: true,
     type: 'POST'
   };
-  @Input('config') config!: DynamicModalConfig;
-  @Input('modalId') modalId?: string;
-  @Input('formData') formData?: any;
+  @Input() config!: DynamicModalConfig;
+  @Input() modalId?: string;
+  @Input() formData?: any;
   @Output() formReady: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   @Output() close: EventEmitter<void> = new EventEmitter<void>();
   @ViewChild('dynamicContainer', { read: ViewContainerRef }) dynamicContainer!: ViewContainerRef;
@@ -59,7 +59,7 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.config = {
       autoSubmit: this.config?.autoSubmit ?? this.defaults.autoSubmit,
       type: this.config?.type ?? this.defaults.type,
@@ -76,20 +76,6 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     this.close.emit();
   }
 
-  private makeDto(): void {
-    Object.keys(this.config.dto).forEach(key => {
-      const step: Step | undefined = this.config.steps.find(s => s.params.name === key);
-      const formValue: any = this.form.value[key];
-      if (step) {
-        if (formValue === 'true' || formValue === 'false') {
-          this.config.dto[key] = formValue === 'true';
-        } else {
-          this.config.dto[key] = formValue || null;
-        }
-      }
-    });
-  }
-
   public onSubmit(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -99,7 +85,7 @@ export class DynamicModalComponent implements OnInit, OnChanges {
       this.formBuilderComponent.processValidationErrors();
       return;
     }
-    this.makeDto();
+    this.formBuilderComponent.makeDto();
     if(this.config.autoSubmit) {
       if(this.config.controller == null || this.config.controller == "") {
         throw new Error("Controller is required for auto submit");
@@ -113,8 +99,6 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     if (!method) {
       throw new Error('Unsupported HTTP method:' + this.config.type);
     }
-    console.log('Generated DTO:', this.config.dto);
-    console.log('generated form: ', this.form.value);
     method.call(this.httpClientService, { headers: new HttpHeaders({'Content-Type': 'application/json'}), controller: this.config.controller }, this.config.dto)
       .subscribe({
         next: response => {

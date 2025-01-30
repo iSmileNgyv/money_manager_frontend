@@ -12,12 +12,14 @@ import {PaymentMethodService} from '../../../services/entities/payment-method.se
 import {StockService} from '../../../services/entities/stock.service';
 import {ListStock} from '../../../dtos/stock/list-stock';
 import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-cashback',
   imports: [
     TranslatePipe,
-    DynamicCardListComponent
+    DynamicCardListComponent,
+    NgIf
   ],
   templateUrl: './cashback.component.html',
   styleUrl: './cashback.component.scss'
@@ -30,6 +32,7 @@ export class CashbackComponent implements OnInit{
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
+  protected isLoaded: boolean = false;
 
   constructor(
     protected readonly translate: TranslateService,
@@ -38,7 +41,11 @@ export class CashbackComponent implements OnInit{
     private readonly stockService: StockService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.initialize().then(() => this.isLoaded = true);
+  }
+
+  private async initialize(): Promise<void> {
     this.createModalConfig = {
       steps: [
         {
@@ -153,6 +160,38 @@ export class CashbackComponent implements OnInit{
       ]
     };
 
+    this.filterSteps = [
+      {
+        step: 1,
+        element_type: 'select',
+        params: {
+          name: 'categoryId',
+          options: await this.getCategories(),
+          label: this.translate.instant('CASHBACK.CATEGORY')
+        },
+        wait: false
+      },
+      {
+        step: 2,
+        element_type: 'select',
+        params: {
+          name: 'stockId',
+          options: await this.getStocks(),
+          label: this.translate.instant('CASHBACK.OBJECT')
+        },
+        wait: false
+      },
+      {
+        step: 3,
+        element_type: 'select',
+        params: {
+          name: 'paymentMethodId',
+          options: await this.getPaymentMethods(),
+          label: this.translate.instant('CASHBACK.PAYMENT_METHOD')
+        },
+        wait: false
+      }
+    ];
   }
 
   async getCategories(): Promise<{value: string, text: string}[]> {
@@ -166,10 +205,11 @@ export class CashbackComponent implements OnInit{
 
   async getPaymentMethods(): Promise<{value: string, text: string}[]> {
     const data: ListPaymentMethod[] | undefined = await this.paymentMethodService.getAll();
-    return data?.map(c => ({
+    const result: {value: string, text: string}[] = data?.map(c => ({
       value: c.id,
       text: c.name
     })) || [];
+    return [{ value: '', text: this.translate.instant('COMMON.SELECT') }, ...result];
   }
 
   async getStocks(): Promise<{value: string, text: string}[]> {

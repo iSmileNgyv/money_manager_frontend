@@ -24,7 +24,6 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log(req.url);
     const token: string | null = localStorage.getItem("accessToken");
     const authReq: HttpRequest<any> = token
       ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })

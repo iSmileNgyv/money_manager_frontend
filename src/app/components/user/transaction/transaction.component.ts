@@ -9,12 +9,25 @@ import {StockService} from '../../../services/entities/stock.service';
 import {ListStock} from '../../../dtos/stock/list-stock';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ListCategory} from '../../../dtos/category/list-category';
-import {DynamicCardListColumns} from '../../dynamic-card-list/dynamic-card-list.component';
+import {
+  DynamicCardListColumns,
+  DynamicCardListComponent,
+  DynamicCardListCustomButtons
+} from '../../dynamic-card-list/dynamic-card-list.component';
+import {NgIf} from '@angular/common';
+import {CashbackService} from '../../../services/entities/cashback.service';
+import {FilterCashback} from '../../../dtos/cashback/filter-cashback';
+import {ListCashback} from '../../../dtos/cashback/list-cashback';
+import {Validators} from '@angular/forms';
+import {ListTransaction} from '../../../dtos/transaction/list-transaction';
 
+declare var $: any;
 @Component({
   selector: 'app-transaction',
   imports: [
-    TranslatePipe
+    TranslatePipe,
+    DynamicCardListComponent,
+    NgIf
   ],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
@@ -25,14 +38,23 @@ export class TransactionComponent implements OnInit{
   protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
+  protected isLoaded: boolean = false;
+  protected customButtons!: DynamicCardListCustomButtons[];
 
   constructor(
     private readonly categoryService: CategoryService,
     private readonly paymentMethodService: PaymentMethodService,
     private readonly stockService: StockService,
+    private readonly cashbackService: CashbackService,
     protected readonly translate: TranslateService
   ) {}
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.initialize().then((): void => {
+      this.isLoaded = true;
+    });
+  }
+
+  private async initialize(): Promise<void> {
     this.createModalConfig = {
       steps: [
         {
@@ -63,25 +85,40 @@ export class TransactionComponent implements OnInit{
             options: await this.getStocks(),
             label: 'Stock'
           },
-          wait: false
+          wait: true,
+          waitParams: {
+            dependsOn: 'categoryId'
+          }
         },
         {
           step: 4,
           element_type: 'input',
           params: {
             name: 'amount',
-            label: 'Amount'
+            label: 'Amount',
+            validators: [
+              Validators.required
+            ],
+            validationMessages: {required: 'Amount is required'}
           },
-          wait: false
+          wait: true,
+          waitParams: {
+            dependsOn: 'categoryId'
+          },
+          onChange: (value: number): void => {this.getFilteredCashback(value);}
         },
         {
           step: 5,
           element_type: 'input',
           params: {
             name: 'cashbackAmount',
-            label: 'Cashback amount'
+            label: 'Cashback amount',
+            value: '0'
           },
-          wait: false
+          wait: true,
+          waitParams: {
+            dependsOn: 'amount'
+          }
         }
       ],
       title: 'Create Transaction'
@@ -150,6 +187,45 @@ export class TransactionComponent implements OnInit{
       ],
       title: 'Edit transaction'
     };
+
+    this.columns = {
+      cardTitle: [
+        {
+          title: 'categoryName',
+          image: 'categoryImage'
+        },
+        {
+          title: 'amount',
+          style: 'padding-left: 30px; font-weight: bold;',
+          class: 'transactionAmountSpan',
+          transform: (value) => {
+            $(".transactionAmountSpan span").addClass("text-danger");
+            return "₼ " + value;
+          }
+        }
+      ],
+      cardBody: [
+        {field: 'categoryName', label: 'Category', image: 'categoryImage'},
+        {field: 'paymentMethodName', label: 'Payment method', image: 'paymentMethodImage'},
+        {field: 'stockName', label: 'Stock', image: 'stockImage'},
+        {field: 'amount', label: 'Amount', transform: (value) => {
+          return "₼ " + value;
+          },
+          style: 'font-weight: bold;'
+        },
+        {field: 'cashbackAmount', label: 'Cashback amount', class: 'text-success font-weight-bold', transform: (value) => {
+          return "₼ " + value;
+          }}
+      ]
+    };
+    this.customButtons = [
+      {
+        icon: 'fas fa-shopping-basket',
+        clickHandler: (value: ListTransaction): void => {
+          console.log(value);
+        }
+      }
+    ];
   }
 
   private async getPaymentMethods(): Promise<{value: string, text: string}[]> {
@@ -176,5 +252,18 @@ export class TransactionComponent implements OnInit{
       text: c.name
     })) || [];
     return [{ value: '', text: this.translate.instant('COMMON.SELECT') }, ...result];
+  }
+
+  private async getFilteredCashback(amount?: number): Promise<void> {
+    const filterCashback: FilterCashback = {
+      categoryId: $("#categoryId").val(),
+      stockId: $("#stockId").val(),
+      paymentMethodId: $("#paymentMethodId").val()
+    };
+    const data: ListCashback[] | undefined = await this.cashbackService.filter(filterCashback);
+    if(data && data.length > 0) {
+      $("#cashbackAmount").val(Number(((amount! * data[0].percentage) / 100).toFixed(2)));
+    }
+    return undefined;
   }
 }
