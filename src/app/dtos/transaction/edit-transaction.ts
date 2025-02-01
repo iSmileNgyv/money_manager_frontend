@@ -5,4 +5,5 @@ export class EditTransaction {
   stockId?: string;
   amount!: number;
   cashbackAmount!: number;
+  eventDate!: Date;
 }

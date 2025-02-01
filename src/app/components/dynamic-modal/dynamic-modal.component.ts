@@ -41,7 +41,7 @@ export class DynamicModalComponent implements OnInit, OnChanges {
   form: FormGroup;
   isCollapsed: boolean = false;
   constructor(
-    private fb: FormBuilder,
+    private readonly fb: FormBuilder,
     private readonly errorService: ErrorService,
     private readonly httpClientService: HttpClientService,
     private readonly languageService: LanguageService

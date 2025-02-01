@@ -150,6 +150,7 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   }
 
   private createForm(): void {
+    this.form.reset();
     this.steps.forEach(step => {
       const control: FormControl<string | null> = this.fb.control(
         step.params.value ?? '',

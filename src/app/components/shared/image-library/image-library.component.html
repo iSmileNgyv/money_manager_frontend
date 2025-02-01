@@ -9,10 +9,10 @@
   <div class="col-12 col-md-3" *ngFor="let image of images">
     <div class="card">
       <div class="card-body">
-        <img src="{{image.fullPath}}" class="img-in-card" />
+        <img src="{{image[environment.framework.imageProperties.imgSrc]}}" class="img-in-card" />
       </div>
-      <div class="card-footer" appDelete [body]="{id: image.id}" controller="medias" (successCallBack)="handleSuccess()">
-        <button type="button" class="btn btn-outline-success" style="float: left" [cdkCopyToClipboard]="image.fullPath" (click)="copyMessage()">
+      <div class="card-footer" appDelete [body]="{id: image[environment.framework.imageProperties.id]}" [controller]="environment.framework.controllers.media" (successCallBack)="handleSuccess()">
+        <button type="button" class="btn btn-outline-success" style="float: left" [cdkCopyToClipboard]="image[environment.framework.imageProperties.imgSrc]" (click)="copyMessage()">
           <i class="fas fa-copy"></i>
         </button>
         <button type="button" class="btn btn-outline-primary" style="float: left" *ngIf="canSelect" (click)="onSelectImage(image)">

@@ -4,4 +4,5 @@ export class CreateTransaction {
   stockId?: string;
   amount!: number;
   cashbackAmount!: number;
+  eventDate!: Date;
 }

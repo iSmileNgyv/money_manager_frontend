@@ -11,4 +11,5 @@ export class ListTransaction {
   stockImage?: string;
   amount!: number;
   cashbackAmount!: number;
+  eventDate!: Date;
 }

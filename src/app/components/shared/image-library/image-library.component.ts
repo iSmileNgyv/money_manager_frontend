@@ -9,6 +9,7 @@ import {CdkCopyToClipboard} from '@angular/cdk/clipboard';
 import {firstValueFrom} from 'rxjs';
 import {LanguageService} from '../../../services/language.service';
 import {TranslateService} from '@ngx-translate/core';
+import {environment} from '../../../../environments/environment';
 @Component({
   selector: 'app-image-library',
   imports: [
@@ -27,6 +28,8 @@ export class ImageLibraryComponent implements OnInit{
   @Output() imageSelected: EventEmitter<string> = new EventEmitter<string>();
   protected files: File[] = [];
   protected images: any;
+  protected mediasController: string = environment.framework.controllers.media;
+  protected imageProperties = environment.framework.imageProperties;
 
   constructor(
     private readonly toastr: CustomToastrService,
@@ -60,7 +63,7 @@ export class ImageLibraryComponent implements OnInit{
       formData.append('files', file, file.name);
     });
     this.httpClientService.post({
-      controller: "medias"
+      controller: this.mediasController
     }, formData).subscribe({
       next: (response) => {
         console.log(response);
@@ -81,7 +84,7 @@ export class ImageLibraryComponent implements OnInit{
   private async getAll() {
     try {
       const images = await firstValueFrom(this.httpClientService.get({
-        controller: "medias",
+        controller: this.mediasController,
       }));
       if (!images) {
         return undefined;
@@ -97,12 +100,13 @@ export class ImageLibraryComponent implements OnInit{
     this.files.push(...event.addedFiles);
   }
 
-  protected onSelectImage(image: Image): void {
-    this.imageSelected.emit(JSON.stringify(image));
+  protected onSelectImage(image: any): void {
+    const selectedImage = {
+      [this.imageProperties.unique]: image[this.imageProperties.unique],
+      [this.imageProperties.imgSrc]: image[this.imageProperties.imgSrc]
+    };
+    this.imageSelected.emit(JSON.stringify(selectedImage));
   }
 
-}
-export interface Image {
-  path: string;
-  fullPath: string;
+  protected readonly environment = environment;
 }

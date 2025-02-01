@@ -1,4 +1,4 @@
 <span class="createdDate">
-  <i class="far fa-calendar-alt"></i> {{convertDate(model.createdDate) | date: 'dd-MM-yyyy'}}
-  <i class="far fa-clock"></i> {{convertDate(model.createdDate) | date: 'HH:mm:ss'}}
+  <i class="far fa-calendar-alt"></i> {{convertDate(model[config.createdDate]) | date: 'dd-MM-yyyy'}}
+  <i class="far fa-clock"></i> {{convertDate(model[config.createdDate]) | date: 'HH:mm:ss'}}
 </span>

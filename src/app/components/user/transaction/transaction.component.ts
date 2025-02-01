@@ -20,6 +20,8 @@ import {FilterCashback} from '../../../dtos/cashback/filter-cashback';
 import {ListCashback} from '../../../dtos/cashback/list-cashback';
 import {Validators} from '@angular/forms';
 import {ListTransaction} from '../../../dtos/transaction/list-transaction';
+import {FilterTransaction} from '../../../dtos/transaction/filter-transaction';
+import {Step} from '../../form-builder/form-builder.component';
 
 declare var $: any;
 @Component({
@@ -35,9 +37,11 @@ declare var $: any;
 export class TransactionComponent implements OnInit{
   protected createTransaction: CreateTransaction = new CreateTransaction();
   protected editTransaction: EditTransaction = new EditTransaction();
+  protected filterTransaction: FilterTransaction = new FilterTransaction();
   protected columns!: DynamicCardListColumns;
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
+  protected filterSteps: Step[] = [];
   protected isLoaded: boolean = false;
   protected customButtons!: DynamicCardListCustomButtons[];
 
@@ -113,12 +117,35 @@ export class TransactionComponent implements OnInit{
           params: {
             name: 'cashbackAmount',
             label: 'Cashback amount',
-            value: '0'
+            value: '0',
+            validators: [
+              Validators.required
+            ],
+            validationMessages: {
+              required: 'Cashback amount is required'
+            }
           },
           wait: true,
           waitParams: {
             dependsOn: 'amount'
           }
+        },
+        {
+          step: 6,
+          element_type: 'input',
+          params: {
+            type: 'date',
+            label: 'Date',
+            name: 'eventDate',
+            value: new Date().toISOString().split('T')[0],
+            validators: [
+              Validators.required
+            ],
+            validationMessages: {
+              required: 'Date is required'
+            }
+          },
+          wait: false
         }
       ],
       title: 'Create Transaction'
@@ -178,6 +205,16 @@ export class TransactionComponent implements OnInit{
           step: 6,
           element_type: 'input',
           params: {
+            type: 'date',
+            label: 'Date',
+            name: 'eventDate'
+          },
+          wait: false
+        },
+        {
+          step: 7,
+          element_type: 'input',
+          params: {
             name: 'id',
             label: '',
             type: 'hidden'
@@ -187,6 +224,19 @@ export class TransactionComponent implements OnInit{
       ],
       title: 'Edit transaction'
     };
+
+    this.filterSteps = [
+      {
+        step: 1,
+        element_type: 'select',
+        params: {
+          name: 'categoryId',
+          options: await this.getCategories(),
+          label: 'Category'
+        },
+        wait: false
+      }
+    ];
 
     this.columns = {
       cardTitle: [
@@ -208,6 +258,7 @@ export class TransactionComponent implements OnInit{
         {field: 'categoryName', label: 'Category', image: 'categoryImage'},
         {field: 'paymentMethodName', label: 'Payment method', image: 'paymentMethodImage'},
         {field: 'stockName', label: 'Stock', image: 'stockImage'},
+        {field: 'eventDate', label: 'Date'},
         {field: 'amount', label: 'Amount', transform: (value) => {
           return "₼ " + value;
           },

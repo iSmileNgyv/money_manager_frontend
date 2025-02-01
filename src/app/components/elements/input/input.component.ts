@@ -45,7 +45,6 @@ export class InputComponent implements OnInit, OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     if (changes['value'] && !changes['value'].isFirstChange()) {
       this.valueChange.emit(this.value);
     }

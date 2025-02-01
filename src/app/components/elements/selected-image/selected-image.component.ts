@@ -1,9 +1,10 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {NgIf} from '@angular/common';
-import {Image, ImageLibraryComponent} from '../../shared/image-library/image-library.component';
+import {ImageLibraryComponent} from '../../shared/image-library/image-library.component';
 import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
 import {LanguageService} from '../../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-selected-image',
@@ -22,7 +23,7 @@ export class SelectedImageComponent implements OnChanges, OnInit{
   @Input() imagePath: string | null = null;
   @Input() fullPath: string | null = null;
   @Output() imageSelected: EventEmitter<{path: string, fullPath: string}> = new EventEmitter<{path: string, fullPath: string}>();
-
+  protected imageProperties = environment.framework.imageProperties;
   constructor(
     private readonly languageService: LanguageService
   ) {
@@ -74,13 +75,13 @@ export class SelectedImageComponent implements OnChanges, OnInit{
   }
 
   protected onImageSelect(selectedImageJson: string): void {
-    const selectedImage: Image = JSON.parse(selectedImageJson);
-    this.imagePath = selectedImage.path;
-    this.fullPath = selectedImage.fullPath;
+    const selectedImage: any = JSON.parse(selectedImageJson);
+    this.imagePath = selectedImage[this.imageProperties.unique];
+    this.fullPath = selectedImage[this.imageProperties.imgSrc];
 
     this.imageSelected.emit({
-      path: selectedImage.path,
-      fullPath: selectedImage.fullPath,
+      path: selectedImage[this.imageProperties.unique],
+      fullPath: selectedImage[this.imageProperties.imgSrc],
     });
 
     this.closeModal();

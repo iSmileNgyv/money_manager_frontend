@@ -20,6 +20,7 @@ import {DeleteDirective} from '../../directives/delete.directive';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {DynamicFilterComponent} from '../dynamic-filter/dynamic-filter.component';
 import {Step} from '../form-builder/form-builder.component';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-dynamic-card-list',
@@ -48,11 +49,11 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   @Input() editDto: any;
   @Input() createDto: any;
   @Input() filterDto: any;
-  @Input('createModalConfig') createModalConfig!: DynamicModalConfig;
-  @Input('editModalConfig') editModalConfig!: DynamicModalConfig;
-  @Input('filterSteps') filterSteps: Step[] = [];
-  @Input('columns') columns!: DynamicCardListColumns;
-  @Input('controller') controller!: string;
+  @Input() createModalConfig!: DynamicModalConfig;
+  @Input() editModalConfig!: DynamicModalConfig;
+  @Input() filterSteps: Step[] = [];
+  @Input() columns!: DynamicCardListColumns;
+  @Input() controller!: string;
   @Input() ignoreFilter: boolean = false;
   @Input() customButtons: DynamicCardListCustomButtons[] = [];
   @ViewChild('modalContainer', { read: ViewContainerRef, static: true }) modalContainer!: ViewContainerRef;
@@ -64,7 +65,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   constructor(
     private readonly httpClientService: HttpClientService,
     private readonly spinner: NgxSpinnerService,
-    private fb: FormBuilder
+    private readonly fb: FormBuilder
   ) {
     this.successEmitter.subscribe(async (): Promise<void> => {
       await this.handleSuccess();
@@ -242,6 +243,8 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   protected toggleSearch(): void {
     this.isSearchVisible = !this.isSearchVisible;
   }
+
+  protected readonly environment = environment;
 }
 export interface DynamicCardListColumns {
   cardTitle: {title: string, style?: string, image?: string, implode?: string, class?: string, transform?: (value: any, implode?: string) => any}[];

@@ -20,8 +20,8 @@
               <table style="{{columns.cardTitleStyle}}" class="{{columns.cardTitleClass}}">
                 <tr>
                   <td *ngFor="let title of columns.cardTitle" style="{{title.style}}" class="{{title.class}}">
-                    <img *ngIf="title.image" src="{{ d[title.image].fullPath }}" width="25" height="25" alt=""/>
-                    <span>{{ title.transform ? title.transform(d[title.title], title.implode) : title.implode ? d[title.title] + title.implode : d[title.title] }}</span>
+                    <img *ngIf="title.image" src="{{ d[title.image][environment.framework.imageProperties.imgSrc] }}" width="25" height="25" alt=""/>
+                    <span style="margin-left: 10px;">{{ title.transform ? title.transform(d[title.title], title.implode) : title.implode ? d[title.title] + title.implode : d[title.title] }}</span>
                   </td>
                 </tr>
               </table>
@@ -53,8 +53,8 @@
               <tbody>
               <tr>
                 <td *ngFor="let col of columns.cardBody" class="{{col.class}}" style="{{col.style}}">
-                  <img *ngIf="col.image" src="{{ d[col.image].fullPath }}" width="25" height="25" alt=""/>
-                  <span>{{ col.transform ? col.transform(d[col.field]) : d[col.field] }}</span>
+                  <img *ngIf="col.image && d[col.image][environment.framework.imageProperties.unique]" src="{{ d[col.image][environment.framework.imageProperties.imgSrc] }}" width="25" height="25" alt=""/>
+                  <span style="margin-left: 5px;">{{ col.transform ? col.transform(d[col.field]) : d[col.field] }}</span>
                 </td>
               </tr>
               </tbody>
