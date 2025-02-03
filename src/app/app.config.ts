@@ -50,7 +50,8 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    { provide: 'BASE_API_URL', useValue: 'http://localhost:5111/api', multi: true },
+    //{ provide: 'BASE_API_URL', useValue: 'http://localhost:5111/api', multi: true },
+    {provide: 'BASE_API_URL', useValue: 'https://iso.com.az:8443/api', multi: true},
     { provide: 'VERSION', useValue: 'v1', multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorHandlerInterceptorService, multi: true },
     //{provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient]},
