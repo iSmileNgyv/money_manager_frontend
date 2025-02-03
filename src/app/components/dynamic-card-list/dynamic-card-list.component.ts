@@ -21,6 +21,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {DynamicFilterComponent} from '../dynamic-filter/dynamic-filter.component';
 import {Step} from '../form-builder/form-builder.component';
 import {environment} from '../../../environments/environment';
+import {StateService} from '../../services/state.service';
 
 @Component({
   selector: 'app-dynamic-card-list',
@@ -65,7 +66,8 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   constructor(
     private readonly httpClientService: HttpClientService,
     private readonly spinner: NgxSpinnerService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private readonly stateService: StateService
   ) {
     this.successEmitter.subscribe(async (): Promise<void> => {
       await this.handleSuccess();
@@ -105,9 +107,19 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 
   async ngOnInit(): Promise<void> {
+    this.makeStateData();
     this.checkIfMobile();
     window.addEventListener('resize', this.checkIfMobile.bind(this));
     await this.getData();
+  }
+
+  private makeStateData(): void {
+    this.stateService.updateEditSteps(this.editModalConfig.steps);
+    this.stateService.updateCreateSteps(this.createModalConfig.steps);
+    this.stateService.updateFilterSteps(this.filterSteps);
+    this.stateService.updateCreateDto(this.createDto);
+    this.stateService.updateEditDto(this.editDto);
+    this.stateService.updateFilterDto(this.filterDto);
   }
 
   private sanitizeSteps(steps: Step[]): Step[] {

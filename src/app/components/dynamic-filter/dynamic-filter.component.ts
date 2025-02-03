@@ -6,6 +6,7 @@ import {HttpClientService} from '../../services/http-client.service';
 import {ErrorService} from '../../services/error.service';
 import {LanguageService} from '../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import {StateService} from '../../services/state.service';
 
 @Component({
   selector: 'app-dynamic-filter',
@@ -36,7 +37,8 @@ export class DynamicFilterComponent implements OnInit {
     private readonly httpClientService: HttpClientService,
     private readonly errorService: ErrorService,
     private readonly fb: FormBuilder,
-    private readonly languageService: LanguageService
+    private readonly languageService: LanguageService,
+    private readonly stateService: StateService
   ) {
     this.form = this.fb.group({});
   }

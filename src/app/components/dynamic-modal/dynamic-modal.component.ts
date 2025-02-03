@@ -15,6 +15,7 @@ import {CdkDrag, CdkDragHandle} from '@angular/cdk/drag-drop';
 import {FormBuilderComponent, Step} from '../form-builder/form-builder.component';
 import {LanguageService} from '../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import {StateService} from '../../services/state.service';
 @Component({
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
@@ -44,11 +45,32 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     private readonly fb: FormBuilder,
     private readonly errorService: ErrorService,
     private readonly httpClientService: HttpClientService,
-    private readonly languageService: LanguageService
+    private readonly languageService: LanguageService,
+    private readonly stateService: StateService
   ) {
     this.form = this.fb.group({});
   }
   async ngOnInit(): Promise<void> {
+    /*if(this.config.type == 'POST') {
+      this.stateService.createSteps$.subscribe((steps: Step[]): void => {
+        this.config.steps = steps;
+      });
+      this.stateService.createDto$.subscribe((dto: any): void => {
+        this.config.dto = dto;
+      })
+    }
+    else {
+      this.stateService.editSteps$.subscribe((steps: Step[]): void => {
+        this.config.steps = steps;
+      });
+      this.stateService.editDto$.subscribe((dto: any): void => {
+        this.config.dto = dto;
+      });
+      this.stateService.formData$.subscribe(data => {
+        this.formData = data;
+      });
+    }*/
+
     await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-modal');
     this.formReady.emit(this.form);
     this.config.steps.forEach(step => {

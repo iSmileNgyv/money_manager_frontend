@@ -119,10 +119,10 @@ export class TransactionComponent implements OnInit{
             label: 'Cashback amount',
             value: '0',
             validators: [
-              Validators.required
+              //Validators.required
             ],
             validationMessages: {
-              required: 'Cashback amount is required'
+              //required: 'Cashback amount is required'
             }
           },
           wait: true,
@@ -233,6 +233,16 @@ export class TransactionComponent implements OnInit{
           name: 'categoryId',
           options: await this.getCategories(),
           label: 'Category'
+        },
+        wait: false
+      },
+      {
+        step: 2,
+        element_type: 'select',
+        params: {
+          name: 'stockId',
+          options: await this.getStocks(),
+          label: 'Stock'
         },
         wait: false
       }
