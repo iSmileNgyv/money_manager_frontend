@@ -14,9 +14,9 @@
            [infiniteScrollDistance]="2"
            [infiniteScrollThrottle]="50"
            (scrolled)="onScroll()">
-        <div class="card collapsed-card" *ngFor="let d of data; let i = index">
-          <div class="card-header">
-            <div class="card-title">
+        <div class="card collapsed-card" *ngFor="let d of data; let i = index" style="overflow-x: auto;">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; overflow-x: auto; flex-wrap: nowrap; width: 100%; max-width: 100%; gap: 50px;">
+            <div class="card-title" style="display: flex; align-items: center; white-space: nowrap;">
               <table style="{{columns.cardTitleStyle}}" class="{{columns.cardTitleClass}}">
                 <tr>
                   <td *ngFor="let title of columns.cardTitle" style="{{title.style}}" class="{{title.class}}">
@@ -26,7 +26,7 @@
                 </tr>
               </table>
             </div>
-            <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger">
+            <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger" style="display: flex; align-items: center;  margin-left: auto;">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-plus"></i>
               </button>

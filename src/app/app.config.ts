@@ -6,18 +6,16 @@ import {BrowserAnimationsModule, provideAnimations} from '@angular/platform-brow
 import {provideToastr} from 'ngx-toastr';
 import {
   HTTP_INTERCEPTORS,
-  HttpClient,
   provideHttpClient,
   withFetch, withInterceptorsFromDi
 } from '@angular/common/http';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {TranslateLoader, TranslateModule, TranslatePipe} from '@ngx-translate/core';
+import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
 import {JwtModule} from '@auth0/angular-jwt';
 import {HttpErrorHandlerInterceptorService} from './services/http-error-handler-interceptor.service';
 
-function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, '/i18n/', '.json');
-}
+// function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+//   return new TranslateHttpLoader(http, '/i18n/', '.json');
+// }
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -50,11 +48,10 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    //{ provide: 'BASE_API_URL', useValue: 'http://localhost:5111/api', multi: true },
-    {provide: 'BASE_API_URL', useValue: 'https://iso.com.az:8443/api', multi: true},
+    { provide: 'BASE_API_URL', useValue: 'https://localhost:7208/api', multi: true },
+    //{provide: 'BASE_API_URL', useValue: 'https://iso.com.az:8443/api', multi: true},
     { provide: 'VERSION', useValue: 'v1', multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorHandlerInterceptorService, multi: true },
-    //{provide: TranslateLoader, useFactory: HttpLoaderFactory, deps: [HttpClient]},
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorHandlerInterceptorService, multi: true }
   ]
 
 };
