@@ -1,0 +1,52 @@
+{
+  "COMMON": {
+    "SELECT" : "Select",
+    "NAME" : "Name",
+    "DESCRIPTION" : "Description",
+    "TYPE" : "Type",
+    "HOMEPAGE" : "Homepage"
+  },
+  "CATEGORY": {
+    "CATEGORIES" : "Categories",
+    "NAME_REQUIRED": "Category name cannot be empty",
+    "TYPE_REQUIRED": "Category type cannot be empty",
+    "ADD_CATEGORY": "Add Category",
+    "UPDATE_CATEGORY": "Update Category",
+    "PARENT_CATEGORY" : "Parent category"
+  },
+  "PRODUCT" : {
+    "PRODUCTS" : "Products",
+    "NAME_REQUIRED" : "Product name cannot be empty",
+    "ADD_PRODUCT" : "Add product",
+    "UPDATE_PRODUCT" : "Update product",
+    "PRICE" : "Price",
+    "CATEGORY" : "Category"
+  },
+  "LAYOUT" : {
+    "CATEGORIES" : "Categories",
+    "PRODUCTS" : "Products",
+    "PAYMENT_METHODS" :  "Payment methods",
+    "CASHBACK" : "Cashback",
+    "AZERBAIJAN" : "Azerbaijan",
+    "ENGLISH" : "English"
+  },
+  "PAYMENT_METHOD" : {
+    "PAYMENT_METHODS" :  "Payment methods",
+    "ADD_PAYMENT_METHOD" : "Add payment method",
+    "UPDATE_PAYMENT_METHOD" : "Update payment method"
+  },
+  "STOCK" : {
+    "OBJECTS" : "Objects",
+    "ADD_OBJECT" : "Add object",
+    "UPDATE_OBJECT" : "Edit object"
+  },
+  "CASHBACK" : {
+    "CASHBACK" : "Cashback",
+    "CATEGORY" : "Category",
+    "PAYMENT_METHOD": "Payment method",
+    "OBJECT": "Object",
+    "PERCENTAGE": "Percentage",
+    "ADD_CASHBACK": "Add cashback",
+    "EDIT_CASHBACK": "Edit cashback"
+  }
+}
