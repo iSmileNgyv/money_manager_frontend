@@ -1,0 +1,2 @@
+import './polyfills.server.mjs';
+import{V as r}from"./chunk-7CSA3W3F.mjs";var a=class e{constructor(){}categoryTypes(){return[{value:0,text:"G\u0259lir"},{value:1,text:"X\u0259rc"},{value:2,text:"M\u0259hsul"}]}categoryType(t){switch(t){case 0:return"G\u0259lir";case 1:return"X\u0259rc";case 2:return"M\u0259hsul"}return"undefined"}static \u0275fac=function(c){return new(c||e)};static \u0275prov=r({token:e,factory:e.\u0275fac,providedIn:"root"})};export{a};
