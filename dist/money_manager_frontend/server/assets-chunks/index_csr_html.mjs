@@ -31,6 +31,6 @@ export default `<!doctype html>
       });
     });
   </script>
-<link rel="modulepreload" href="chunk-HA4LIVYS.js"><link rel="modulepreload" href="chunk-V3XTP7UC.js"><link rel="modulepreload" href="chunk-CO3FUA5E.js"><link rel="modulepreload" href="chunk-FYVENUAJ.js"><link rel="modulepreload" href="chunk-PCL73WY7.js"><link rel="modulepreload" href="chunk-V7BYYPEQ.js"><link rel="modulepreload" href="chunk-MGDPBCMH.js"><link rel="modulepreload" href="chunk-IJ63IUIN.js"><link rel="modulepreload" href="chunk-ZIJ2ZRAW.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="scripts-ZQ7TXBUI.js" defer=""></script><script src="main-XZ4F37I4.js" type="module"></script></body>
+<link rel="modulepreload" href="chunk-HA4LIVYS.js"><link rel="modulepreload" href="chunk-V3XTP7UC.js"><link rel="modulepreload" href="chunk-CO3FUA5E.js"><link rel="modulepreload" href="chunk-FYVENUAJ.js"><link rel="modulepreload" href="chunk-PCL73WY7.js"><link rel="modulepreload" href="chunk-V7BYYPEQ.js"><link rel="modulepreload" href="chunk-MGDPBCMH.js"><link rel="modulepreload" href="chunk-IJ63IUIN.js"><link rel="modulepreload" href="chunk-ZIJ2ZRAW.js"><script src="polyfills-FFHMD2TL.js" type="module"></script><script src="scripts-ZQ7TXBUI.js" defer=""></script><script src="main-JIABGLSH.js" type="module"></script></body>
 </html>
 `;
