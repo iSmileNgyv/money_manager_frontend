@@ -43,8 +43,9 @@ export const appConfig: ApplicationConfig = {
           tokenGetter: () => {
             return localStorage.getItem("accessToken");
           },
-          allowedDomains: ["localhost:5111"],
-          disallowedRoutes: ["localhost:4200/i18n/"]
+          allowedDomains: ["https://iso.com.az:8443"],
+          //allowedDomains: ["https://localhost:7208"],
+          disallowedRoutes: ["money.iso.com.az/i18n/"]
         }
       })
     ),
