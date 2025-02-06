@@ -16,7 +16,7 @@ export class CategoryService {
   async filterByType(type: string): Promise<ListCategory[] | undefined> {
     return new Promise((resolve, reject) => {
       this.httpClientService.get<ListCategory[]>({
-        controller: "categories",
+        controller: "category",
         action: 'filter',
         queryString: `categoryType=${type}`
       }).subscribe({
@@ -34,7 +34,7 @@ export class CategoryService {
   async getAll(): Promise<ListCategory[] | undefined> {
     return new Promise((resolve, reject) => {
       this.httpClientService.get<ListCategory[]>({
-        controller: "categories",
+        controller: "category",
         action: 'all'
       }).subscribe({
         next: (data: ListCategory[]): void => {

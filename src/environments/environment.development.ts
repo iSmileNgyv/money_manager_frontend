@@ -7,7 +7,7 @@ export const environment = {
       imgSrc: "fullPath",
     },
     controllers: {
-      media: 'medias'
+      media: 'media'
     },
     createdDate: "createdDate"
   }

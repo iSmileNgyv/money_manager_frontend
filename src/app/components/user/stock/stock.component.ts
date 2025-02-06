@@ -5,7 +5,11 @@ import {FilterStock} from '../../../dtos/stock/filter-stock';
 import {DynamicModalConfig} from '../../dynamic-modal/dynamic-modal.component';
 import {Step} from '../../form-builder/form-builder.component';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {
+  ApiSettings,
+  DynamicCardListColumns,
+  DynamicCardListComponent
+} from '../../dynamic-card-list/dynamic-card-list.component';
 
 @Component({
   selector: 'app-stock',
@@ -24,6 +28,7 @@ export class StockComponent implements OnInit{
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
+  protected apiSettings!: ApiSettings;
 
   constructor(
     protected readonly translate: TranslateService
@@ -54,7 +59,6 @@ export class StockComponent implements OnInit{
       ],
       title: this.translate.instant('STOCK.ADD_OBJECT')
     };
-
     this.editModalConfig = {
       steps: [
         {
@@ -88,7 +92,6 @@ export class StockComponent implements OnInit{
       ],
       title: this.translate.instant('STOCK.UPDATE_OBJECT')
     };
-
     this.filterSteps = [
       {
         step: 1,
@@ -100,7 +103,6 @@ export class StockComponent implements OnInit{
         wait: false
       }
     ];
-
     this.columns = {
       cardTitle: [
         {title: 'name', image: 'image'}
@@ -108,6 +110,9 @@ export class StockComponent implements OnInit{
       cardBody: [
         {label: this.translate.instant('COMMON.NAME'), field: 'name'}
       ]
+    };
+    this.apiSettings = {
+      controller: 'stock'
     };
   }
 }

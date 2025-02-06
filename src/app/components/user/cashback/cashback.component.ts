@@ -11,7 +11,11 @@ import {ListPaymentMethod} from '../../../dtos/payment-method/list-payment-metho
 import {PaymentMethodService} from '../../../services/entities/payment-method.service';
 import {StockService} from '../../../services/entities/stock.service';
 import {ListStock} from '../../../dtos/stock/list-stock';
-import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {
+  ApiSettings,
+  DynamicCardListColumns,
+  DynamicCardListComponent
+} from '../../dynamic-card-list/dynamic-card-list.component';
 import {NgIf} from '@angular/common';
 
 @Component({
@@ -32,6 +36,7 @@ export class CashbackComponent implements OnInit{
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
+  protected apiSettings!: ApiSettings;
   protected isLoaded: boolean = false;
 
   constructor(
@@ -159,7 +164,6 @@ export class CashbackComponent implements OnInit{
         {label: this.translate.instant('CASHBACK.PERCENTAGE'), field: 'percentage'}
       ]
     };
-
     this.filterSteps = [
       {
         step: 1,
@@ -192,6 +196,9 @@ export class CashbackComponent implements OnInit{
         wait: false
       }
     ];
+    this.apiSettings = {
+      controller: 'cashback'
+    };
   }
 
   async getCategories(): Promise<{value: string, text: string}[]> {

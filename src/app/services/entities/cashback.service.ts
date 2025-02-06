@@ -16,7 +16,7 @@ export class CashbackService {
   async filter(filterCashback: FilterCashback): Promise<ListCashback[] | undefined> {
     return new Promise((resolve, reject) => {
       this.httpClientService.get<ListCashback[]>({
-        controller: 'cashbacks',
+        controller: 'cashback',
         action: 'filter',
         queryString: this.toQueryString(filterCashback)
       }).subscribe({

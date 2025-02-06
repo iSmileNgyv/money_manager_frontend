@@ -15,7 +15,8 @@
     </div><!-- /.container-fluid -->
   </section>
   <section class="content">
-    <app-dynamic-card-list [createDto]="createCategory" [editDto]="editCategory" controller="categories"
+    <app-dynamic-card-list [createDto]="createCategory" [editDto]="editCategory"
+                           [apiSettings]="apiSettings"
                            [columns]="columns"
                            [createModalConfig]="createModalConfig" [editModalConfig]="editModalConfig" [filterSteps]="filterSteps" [filterDto]="filterCategory"></app-dynamic-card-list>
   </section>

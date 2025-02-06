@@ -1,6 +1,6 @@
 <div class="row">
-  <div class="col-md-2" *ngIf="!ignoreFilter" [ngClass]="{'d-none' : isMobile && !isSearchVisible}">
-    <app-dynamic-filter [steps]="filterSteps" [controller]="controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
+  <div class="col-md-2" *ngIf="!ignoreFilter" [ngClass]="{'d-none' : isMobile && !isSearchVisible}" style="position: sticky; top: 20px; z-index: 1000; height: fit-content;">
+    <app-dynamic-filter [steps]="filterSteps" [controller]="apiSettings.controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
   </div>
   <div [class.col-md-10]="true" [class.col-md-12]="(isMobile && !isSearchVisible) || ignoreFilter">
     <div class="card">
@@ -26,7 +26,7 @@
                 </tr>
               </table>
             </div>
-            <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger" style="display: flex; align-items: center;  margin-left: auto;">
+            <div class="card-tools" appDelete [body]="{id: d.id}" [controller]="apiSettings.controller" (successCallBack)="handleSuccess()" buttonClass="btn btn-sm text-danger" style="display: flex; align-items: center;  margin-left: auto;">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-plus"></i>
               </button>
@@ -60,13 +60,16 @@
               </tbody>
             </table>
           </div>
-          <div class="card-footer" appDelete [body]="{id: d.id}" [controller]="controller" (successCallBack)="handleSuccess()">
+          <div class="card-footer" appDelete [body]="{id: d.id}" [controller]="apiSettings.controller" (successCallBack)="handleSuccess()">
             <a href="javascript:void(0)" style="float: left;" class="btn btn-outline-success" data-toggle="modal" [attr.data-target]="'#edit-modal-' + i" (click)="openEditModal(i, d)"><i class="fas fa-edit"></i></a>
             <app-card-footer-information [model]="d"></app-card-footer-information>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div *ngIf="isLoading" style="text-align: center; margin: 20px;">
+    <ngx-spinner type="ball-clip-rotate" [fullScreen]="false" size="small" color="#ea0000"></ngx-spinner>
   </div>
 </div>
 <ng-container #modalContainer></ng-container>

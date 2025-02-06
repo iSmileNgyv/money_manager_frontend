@@ -2,7 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {DynamicModalConfig} from '../../dynamic-modal/dynamic-modal.component';
 import {Step} from '../../form-builder/form-builder.component';
-import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {
+  ApiSettings,
+  DynamicCardListColumns,
+  DynamicCardListComponent
+} from '../../dynamic-card-list/dynamic-card-list.component';
 import {CreateProduct} from '../../../dtos/product/create-product';
 import {EditProduct} from '../../../dtos/product/edit-product';
 import {FilterProduct} from '../../../dtos/product/filter-product';
@@ -31,6 +35,7 @@ export class ProductComponent implements OnInit{
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
   protected isLoaded: boolean = false;
+  protected apiSettings!: ApiSettings;
   constructor(
     protected readonly translate: TranslateService,
     private readonly categoryService: CategoryService
@@ -195,7 +200,6 @@ export class ProductComponent implements OnInit{
         wait: false
       }
     ];
-
     this.columns = {
       cardTitle: [
         {title: 'name', image: 'image'}
@@ -205,6 +209,9 @@ export class ProductComponent implements OnInit{
         {label: this.translate.instant('PRODUCT.PRICE'), field: 'price'},
         {label: this.translate.instant('PRODUCT.CATEGORY'), field: 'categoryName'}
       ]
+    };
+    this.apiSettings = {
+      controller: 'product'
     };
   }
 

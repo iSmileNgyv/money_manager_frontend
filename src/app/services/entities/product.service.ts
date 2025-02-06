@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
 import {HttpClientService} from '../http-client.service';
+import {ListProduct} from '../../dtos/product/list-product';
 import {HttpErrorResponse} from '@angular/common/http';
-import {ListStock} from '../../dtos/stock/list-stock';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StockService {
+export class ProductService {
 
   constructor(
     private readonly httpClientService: HttpClientService
   ) { }
 
-  async getAll(): Promise<ListStock[] | undefined> {
+  async getAll(): Promise<ListProduct[] | undefined> {
     return new Promise((resolve, reject) => {
-      this.httpClientService.get<ListStock[]>({
-        controller: "stock",
+      this.httpClientService.get<ListProduct[]>({
+        controller: "product",
         action: 'all'
       }).subscribe({
-        next: (data: ListStock[]): void => {
+        next: (data: ListProduct[]): void => {
           resolve(data);
         },
         error: (error: HttpErrorResponse): void => {

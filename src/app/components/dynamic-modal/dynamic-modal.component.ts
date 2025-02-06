@@ -16,6 +16,7 @@ import {FormBuilderComponent, Step} from '../form-builder/form-builder.component
 import {LanguageService} from '../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
 import {StateService} from '../../services/state.service';
+import {ApiSettings} from '../dynamic-card-list/dynamic-card-list.component';
 @Component({
   selector: 'app-dynamic-modal',
   templateUrl: './dynamic-modal.component.html',
@@ -109,7 +110,7 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     }
     this.formBuilderComponent.makeDto();
     if(this.config.autoSubmit) {
-      if(this.config.controller == null || this.config.controller == "") {
+      if(this.config.apiSettings?.controller == null || this.config.apiSettings.controller == "") {
         throw new Error("Controller is required for auto submit");
       }
     const method = this.config.type!.toUpperCase() === "POST"
@@ -121,7 +122,7 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     if (!method) {
       throw new Error('Unsupported HTTP method:' + this.config.type);
     }
-    method.call(this.httpClientService, { headers: new HttpHeaders({'Content-Type': 'application/json'}), controller: this.config.controller }, this.config.dto)
+    method.call(this.httpClientService, { headers: new HttpHeaders({'Content-Type': 'application/json'}), controller: this.config.apiSettings.controller }, this.config.dto)
       .subscribe({
         next: response => {
           console.log('Success:', response);
@@ -146,7 +147,7 @@ export interface DynamicModalConfig {
   size?: 'sm' | 'lg' | 'xl' | 'md';
   dto?: any;
   autoSubmit?: boolean;
-  controller?: string;
+  apiSettings?: ApiSettings;
   type?: 'POST' | 'PUT' | 'DELETE';
   formSubmit?: EventEmitter<any>;
   successCallBack?: EventEmitter<any>;

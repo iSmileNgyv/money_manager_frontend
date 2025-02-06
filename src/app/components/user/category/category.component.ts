@@ -6,7 +6,11 @@ import {FilterCategory} from '../../../dtos/category/filter-category';
 import {GlobalFunctionsService} from '../../../services/global-functions.service';
 import {DynamicModalConfig} from '../../dynamic-modal/dynamic-modal.component';
 import {Step} from '../../form-builder/form-builder.component';
-import {DynamicCardListColumns, DynamicCardListComponent} from '../../dynamic-card-list/dynamic-card-list.component';
+import {
+  ApiSettings,
+  DynamicCardListColumns,
+  DynamicCardListComponent
+} from '../../dynamic-card-list/dynamic-card-list.component';
 import {CategoryService} from '../../../services/entities/category.service';
 import {ListCategory} from '../../../dtos/category/list-category';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
@@ -33,6 +37,7 @@ export class CategoryComponent implements OnInit{
   protected createModalConfig!: DynamicModalConfig;
   protected editModalConfig!: DynamicModalConfig;
   protected filterSteps: Step[] = [];
+  protected apiSettings!: ApiSettings;
   ngOnInit(): void {
     this.editModalConfig = {
       steps: [
@@ -68,6 +73,9 @@ export class CategoryComponent implements OnInit{
         {label: this.translate.instant('COMMON.TYPE'), field: 'categoryType', transform: this.transformValue.bind(this)},
         {label: 'Parent category', field: 'parentCategoryName'}
       ]
+    };
+    this.apiSettings = {
+      controller: 'category'
     };
   }
 

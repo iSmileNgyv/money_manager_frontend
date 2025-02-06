@@ -10,6 +10,7 @@ import {ListStock} from '../../../dtos/stock/list-stock';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {ListCategory} from '../../../dtos/category/list-category';
 import {
+  ApiSettings,
   DynamicCardListColumns,
   DynamicCardListComponent,
   DynamicCardListCustomButtons
@@ -22,6 +23,7 @@ import {Validators} from '@angular/forms';
 import {ListTransaction} from '../../../dtos/transaction/list-transaction';
 import {FilterTransaction} from '../../../dtos/transaction/filter-transaction';
 import {Step} from '../../form-builder/form-builder.component';
+import {Router} from '@angular/router';
 
 declare var $: any;
 @Component({
@@ -44,13 +46,15 @@ export class TransactionComponent implements OnInit{
   protected filterSteps: Step[] = [];
   protected isLoaded: boolean = false;
   protected customButtons!: DynamicCardListCustomButtons[];
+  protected apiSettings!: ApiSettings;
 
   constructor(
     private readonly categoryService: CategoryService,
     private readonly paymentMethodService: PaymentMethodService,
     private readonly stockService: StockService,
     private readonly cashbackService: CashbackService,
-    protected readonly translate: TranslateService
+    protected readonly translate: TranslateService,
+    private readonly router: Router
   ) {}
   ngOnInit(): void {
     this.initialize().then((): void => {
@@ -150,7 +154,6 @@ export class TransactionComponent implements OnInit{
       ],
       title: 'Create Transaction'
     };
-
     this.editModalConfig = {
       steps: [
         {
@@ -224,7 +227,6 @@ export class TransactionComponent implements OnInit{
       ],
       title: 'Edit transaction'
     };
-
     this.filterSteps = [
       {
         step: 1,
@@ -247,7 +249,6 @@ export class TransactionComponent implements OnInit{
         wait: false
       }
     ];
-
     this.columns = {
       cardTitle: [
         {
@@ -283,10 +284,13 @@ export class TransactionComponent implements OnInit{
       {
         icon: 'fas fa-shopping-basket',
         clickHandler: (value: ListTransaction): void => {
-          console.log(value);
+          this.router.navigate(['/transaction-product', value.id]);
         }
       }
     ];
+    this.apiSettings = {
+      controller: 'transaction'
+    };
   }
 
   private async getPaymentMethods(): Promise<{value: string, text: string}[]> {

@@ -15,7 +15,7 @@ export class PaymentMethodService {
   async getAll(): Promise<ListPaymentMethod[] | undefined> {
     return new Promise((resolve, reject) => {
       this.httpClientService.get<ListPaymentMethod[]>({
-        controller: "paymentMethods",
+        controller: "paymentMethod",
         action: 'all'
       }).subscribe({
         next: (data: ListPaymentMethod[]): void => {

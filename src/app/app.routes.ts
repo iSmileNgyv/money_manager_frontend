@@ -38,6 +38,10 @@ export const routes: Routes = [
       {
         path: "operation",
         loadComponent: () => import('../app/components/user/transaction/transaction.component').then(c => c.TransactionComponent)
+      },
+      {
+        path: "transaction-product/:transactionId",
+        loadComponent: () => import('../app/components/user/transaction-product/transaction-product.component').then(c => c.TransactionProductComponent)
       }
     ],
     canActivate: [authGuard]

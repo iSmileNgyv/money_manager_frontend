@@ -43,7 +43,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   private page: number = 0;
   private pageSize: number = 10;
   private noMoreData: boolean = false;
-  private isLoading: boolean = false;
+  protected isLoading: boolean = false;
   private scrollPosition: number = 0;
   protected isMobile: boolean = false;
   protected isSearchVisible: boolean = false;
@@ -54,7 +54,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   @Input() editModalConfig!: DynamicModalConfig;
   @Input() filterSteps: Step[] = [];
   @Input() columns!: DynamicCardListColumns;
-  @Input() controller!: string;
+  @Input() apiSettings!: ApiSettings;
   @Input() ignoreFilter: boolean = false;
   @Input() customButtons: DynamicCardListCustomButtons[] = [];
   @ViewChild('modalContainer', { read: ViewContainerRef, static: true }) modalContainer!: ViewContainerRef;
@@ -81,7 +81,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
       title: 'Create',
       dto: this.createDto,
       autoSubmit: true,
-      controller: this.controller,
+      apiSettings: this.apiSettings,
       type: 'POST',
       successCallBack: this.successEmitter,
       ...this.createModalConfig
@@ -91,7 +91,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
       title: 'Edit',
       dto: this.editDto,
       autoSubmit: true,
-      controller: this.controller,
+      apiSettings: this.apiSettings,
       type: 'PUT',
       successCallBack: this.successEmitter,
       ...this.editModalConfig
@@ -219,10 +219,17 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
     if (this.isLoading || this.noMoreData) {
       return;
     }
+    this.isLoading = true;
     if (this.page === 0)
       await this.spinner.show();
     try {
-      const newData: [] = await firstValueFrom(this.httpClientService.get<any>({ controller: this.controller, queryString: `page=${this.page}&size=${this.pageSize}` }));
+      const newData: [] = await firstValueFrom(this.httpClientService.get<any>(
+        {
+          controller: this.apiSettings.controller,
+          action: this.apiSettings.action,
+          queryString: this.apiSettings.queryString ? `${this.apiSettings.queryString}&page=${this.page}&size=${this.pageSize}` : `page=${this.page}&size=${this.pageSize}`
+        }
+      ));
       if (newData && newData.length > 0) {
         this.data = [...this.data, ...newData];
         setTimeout((): void => {
@@ -270,4 +277,10 @@ export interface DynamicCardListCustomButtons {
   icon?: string;
   class?: string;
   clickHandler?: (data: any) => void;
+}
+
+export interface ApiSettings {
+  controller: string;
+  action?: string;
+  queryString?: string;
 }
