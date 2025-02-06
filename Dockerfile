@@ -3,15 +3,12 @@ FROM node:latest AS build
 
 # Çalışma dizinini belirle
 WORKDIR /app
-
+COPY . .
 # Proje dosyalarını kopyala
-COPY package.json package-lock.json ./
-
+#COPY package.json package-lock.json ./
 # Bağımlılıkları yükle
 RUN npm install
 
-# Tüm proje dosyalarını kopyala
-COPY . .
 
 # Angular projesini derle
 RUN npm run build -- --configuration production
