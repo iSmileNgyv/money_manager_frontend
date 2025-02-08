@@ -52,26 +52,6 @@ export class DynamicModalComponent implements OnInit, OnChanges {
     this.form = this.fb.group({});
   }
   async ngOnInit(): Promise<void> {
-    /*if(this.config.type == 'POST') {
-      this.stateService.createSteps$.subscribe((steps: Step[]): void => {
-        this.config.steps = steps;
-      });
-      this.stateService.createDto$.subscribe((dto: any): void => {
-        this.config.dto = dto;
-      })
-    }
-    else {
-      this.stateService.editSteps$.subscribe((steps: Step[]): void => {
-        this.config.steps = steps;
-      });
-      this.stateService.editDto$.subscribe((dto: any): void => {
-        this.config.dto = dto;
-      });
-      this.stateService.formData$.subscribe(data => {
-        this.formData = data;
-      });
-    }*/
-
     await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-modal');
     this.formReady.emit(this.form);
     this.config.steps.forEach(step => {

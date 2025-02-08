@@ -24,6 +24,7 @@ import {ListTransaction} from '../../../dtos/transaction/list-transaction';
 import {FilterTransaction} from '../../../dtos/transaction/filter-transaction';
 import {Step} from '../../form-builder/form-builder.component';
 import {Router} from '@angular/router';
+import {StateService} from '../../../services/state.service';
 
 declare var $: any;
 @Component({
@@ -54,7 +55,8 @@ export class TransactionComponent implements OnInit{
     private readonly stockService: StockService,
     private readonly cashbackService: CashbackService,
     protected readonly translate: TranslateService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly stateService: StateService
   ) {}
   ngOnInit(): void {
     this.initialize().then((): void => {
@@ -320,6 +322,9 @@ export class TransactionComponent implements OnInit{
   }
 
   private async getFilteredCashback(amount?: number): Promise<void> {
+    this.createModalConfig.steps[3].params.value = "10";
+    console.error(this.createModalConfig.steps);
+    this.stateService.updateSteps(this.createModalConfig.steps);
     const filterCashback: FilterCashback = {
       categoryId: $("#categoryId").val(),
       stockId: $("#stockId").val(),

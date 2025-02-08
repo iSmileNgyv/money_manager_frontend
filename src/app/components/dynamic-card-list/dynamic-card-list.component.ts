@@ -41,7 +41,7 @@ import {StateService} from '../../services/state.service';
 export class DynamicCardListComponent implements OnInit, OnChanges{
   protected data: any = [];
   private page: number = 0;
-  private pageSize: number = 10;
+  private pageSize: number = 50;
   private noMoreData: boolean = false;
   protected isLoading: boolean = false;
   private scrollPosition: number = 0;
@@ -114,8 +114,6 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 
   private makeStateData(): void {
-    this.stateService.updateEditSteps(this.editModalConfig.steps);
-    this.stateService.updateCreateSteps(this.createModalConfig.steps);
     this.stateService.updateFilterSteps(this.filterSteps);
     this.stateService.updateCreateDto(this.createDto);
     this.stateService.updateEditDto(this.editDto);
@@ -123,6 +121,7 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
   }
 
   private sanitizeSteps(steps: Step[]): Step[] {
+    this.stateService.updateSteps(steps);
     return steps.map(step => {
       return {
         ...step,
@@ -144,7 +143,11 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
 
   openCreateModal(): void {
     this.closeExistingModal();
-    this.createModalConfig.steps = this.sanitizeSteps(this.initialCreateSteps);
+
+    //this.createModalConfig.steps = this.sanitizeSteps(this.initialCreateSteps);
+    this.stateService.steps$.subscribe(value => {
+      this.createModalConfig.steps = this.sanitizeSteps(value);
+    });
     this.currentModalRef = this.modalContainer.createComponent(DynamicModalComponent);
     this.currentModalRef.instance.config = this.createModalConfig;
 
@@ -165,7 +168,11 @@ export class DynamicCardListComponent implements OnInit, OnChanges{
 
   openEditModal(index: number, data: any): void {
     this.closeExistingModal();
-    this.editModalConfig.steps = this.sanitizeSteps(this.initialEditSteps);
+    this.stateService.updateFormData(data);
+    //this.editModalConfig.steps = this.sanitizeSteps(this.initialEditSteps);
+    this.stateService.steps$.subscribe(value => {
+      this.editModalConfig.steps = this.sanitizeSteps(value);
+    });
     this.currentModalRef = this.modalContainer.createComponent(DynamicModalComponent);
     this.currentModalRef.instance.config = {
       ...this.editModalConfig,

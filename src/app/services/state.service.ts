@@ -4,28 +4,22 @@ import { Step } from '../components/form-builder/form-builder.component';
 
 @Injectable({ providedIn: 'root' })
 export class StateService {
-  private createStepsSubject: BehaviorSubject<Step[]> = new BehaviorSubject<Step[]>([]);
-  private editStepsSubject: BehaviorSubject<Step[]> = new BehaviorSubject<Step[]>([]);
+  private stepsSubject: BehaviorSubject<Step[]> = new BehaviorSubject<Step[]>([]);
   private formDataSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private createDtoSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private editDtoSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private filterDtoSubject: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private filterStepsSubject: BehaviorSubject<Step[]> = new BehaviorSubject<Step[]>([]);
 
-  createSteps$: Observable<Step[]> = this.createStepsSubject.asObservable();
-  editSteps$: Observable<Step[]> = this.editStepsSubject.asObservable();
+  steps$: Observable<Step[]> = this.stepsSubject.asObservable();
   formData$: Observable<any> = this.formDataSubject.asObservable();
   createDto$: Observable<any> = this.createDtoSubject.asObservable();
   editDto$: Observable<any> = this.editDtoSubject.asObservable();
   filterDto$: Observable<any> = this.filterDtoSubject.asObservable();
   filterSteps$: Observable<Step[]> = this.filterStepsSubject.asObservable();
 
-  updateCreateSteps(newSteps: Step[]): void {
-    this.createStepsSubject.next(newSteps);
-  }
-
-  updateEditSteps(newSteps: Step[]): void {
-    this.editStepsSubject.next(newSteps);
+  updateSteps(newSteps: Step[]): void {
+    this.stepsSubject.next(newSteps);
   }
 
   updateFormData(newFormData: any): void {

@@ -19,6 +19,7 @@ import {ErrorService} from '../../services/error.service';
 import {SelectedImageComponent} from '../elements/selected-image/selected-image.component';
 import {LanguageService} from '../../services/language.service';
 import {TranslatePipe} from '@ngx-translate/core';
+import {StateService} from '../../services/state.service';
 declare var $: any;
 type CommonParams = {
   required?: boolean;
@@ -137,10 +138,14 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
     private readonly fb: FormBuilder,
     private readonly renderer: Renderer2,
     private readonly errorService: ErrorService,
-    private readonly languageService: LanguageService
+    private readonly languageService: LanguageService,
+    private readonly stateService: StateService
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.stateService.formData$.subscribe(value => {
+      this.formData = value;
+    });
     await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'form-builder');
   }
 
@@ -161,7 +166,6 @@ export class FormBuilderComponent implements AfterViewInit, OnInit {
   }
 
   makeDto(): void {
-    console.log("Steps", this.steps);
     Object.keys(this.dto).forEach(key => {
       const step: Step | undefined = this.steps.find(s => s.params.name === key);
       const formValue: any = this.form.value[key];

@@ -45,6 +45,9 @@ export class DynamicFilterComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.languageService.loadCustomTranslations(this.languageService.getCurrentLanguage(), 'dynamic-filter');
+    this.stateService.filterSteps$.subscribe(value => {
+      this.steps = value;
+    });
   }
 
   makeDto(): void {

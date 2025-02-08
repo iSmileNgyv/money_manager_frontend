@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-2" *ngIf="!ignoreFilter" [ngClass]="{'d-none' : isMobile && !isSearchVisible}" style="position: sticky; top: 20px; z-index: 1000; height: fit-content;">
-    <app-dynamic-filter [steps]="filterSteps" [controller]="apiSettings.controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
+    <app-dynamic-filter [controller]="apiSettings.controller" [dto]="filterDto" [autoSubmit]="true" (clearFilter)="handleSuccess()" (successCallBack)="applyFilter($event)"></app-dynamic-filter>
   </div>
   <div [class.col-md-10]="true" [class.col-md-12]="(isMobile && !isSearchVisible) || ignoreFilter">
     <div class="card">
